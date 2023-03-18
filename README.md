@@ -2,6 +2,7 @@
 
 ## ToDo
 
+- [ ] Component 구현하기
 - [ ] 비동기 api 다루기
 - [ ] Routing 설정하기
 - [ ] state 관리 하기
