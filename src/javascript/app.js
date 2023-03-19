@@ -1,24 +1,12 @@
-function App({ $target, initialState }) {
-  let data = initialState;
-
+function App({ $target }) {
   const render = () => {
     $target.innerHTML = `
     <div>
-      <p>${data.message}</p>
-      <button class="btn">Click me!</button>
+      <h1>Hello</h1>
+      
     </div>`;
   };
-
-  const mount = () => {
-    render();
-    $target.querySelector(".btn").addEventListener("click", handleClick);
-  };
-
-  const handleClick = () => {
-    data.message = "Button Clicked";
-    render();
-  };
-  mount();
+  render();
 }
 
 export default App;
