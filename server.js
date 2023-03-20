@@ -7,10 +7,10 @@ const PORT = 3000;
 
 app.use(express.static(__dirname));
 
-app.get("*", (req, res) => {
+app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-app.listen(PORT, () => {
+app.listen(process.env.PORT || PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
 });
