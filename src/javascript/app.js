@@ -1,12 +1,17 @@
+import ItemList from "./components/item/itemlist.js";
+import api from "./lib/api.js";
 function App({ $target }) {
-  const render = () => {
-    $target.innerHTML = `
-    <div>
-      <h1>Hello</h1>
-      
-    </div>`;
+  const response = async () => {
+    return await (await api()).fetchProductsList();
   };
-  render();
+
+  const { pathname } = location;
+
+  if (pathname === "/") {
+    return ItemList({ $target, data: response() });
+  } else {
+    console.log("Aaa");
+  }
 }
 
 export default App;

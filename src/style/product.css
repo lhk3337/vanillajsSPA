@@ -1,0 +1,48 @@
+.product_container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 60px;
+}
+.product_list {
+  width: 380px;
+  height: 462px;
+  color: var(--primary-text-color);
+}
+.product_img {
+  width: 380px;
+  height: 380px;
+  border-radius: 10px;
+  border: 1px solid var(--primary-border-color);
+}
+.product_content {
+  margin-top: 20px;
+}
+.product_title {
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: 400;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+.product_title .heart_btn {
+  width: 22px;
+  height: 22px;
+  background: url(../assets/icon-heart.svg) no-repeat center / contain;
+}
+.product_value {
+  display: flex;
+  align-items: center;
+}
+.product_value .price {
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 30.5px;
+}
+.product_value .discount {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--secondary-color);
+  margin-left: 10px;
+  line-height: 20.03px;
+}

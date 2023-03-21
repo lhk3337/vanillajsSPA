@@ -1,1 +1,18 @@
 @import "reset.css";
+@import "product.css";
+
+:root {
+  --primary-color: #f2f2f2;
+  --secondary-color: #6327fe;
+  --thirds-color: #eb5757;
+
+  --primary-text-color: #333333;
+  --secondary-text-color: #828282;
+
+  --primary-border-color: #bdbdbd;
+}
+
+main {
+  max-width: 1260px;
+  margin: 10rem auto;
+}
