@@ -4,7 +4,16 @@ import { routeChange } from "../../lib/router.js";
 export default function ItemList({ $main, apiData }) {
   this.render = async () => {
     const productData = await apiData;
-    $main.innerHTML = `
+
+    // api데이터 호출이 실패 했을때 404 not found로 핸들러
+    if (!productData) {
+      $main.innerHTML = `
+      <div class="not_found">
+        <h1>404</h1>
+        <span>Page Not Found</span>
+      </div>`;
+    } else {
+      $main.innerHTML = `
           <ul class="product_container">
               ${productData
                 .map((value, i) => {
@@ -42,23 +51,23 @@ export default function ItemList({ $main, apiData }) {
               <button class="cart_btn"><img src="/src/assets/cart-btn.svg"></button>
               `;
 
-    // evnet click handling
-    Array.from(document.querySelectorAll(".product_list")).map((v) =>
-      v.addEventListener("click", (e) => {
-        if (e.target.className === "heart_btn_cancel") {
-          setItem(v.dataset.key, true);
-          this.render();
-        } else if (e.target.className === "heart_btn") {
-          removeItem(v.dataset.key);
-          this.render();
-        } else {
-          if (v.dataset.key) {
-            new ItemDetail({ $main, id: v.dataset.key }).render();
+      // evnet handling
+      Array.from(document.querySelectorAll(".product_list")).map((v) =>
+        v.addEventListener("click", (e) => {
+          if (e.target.className === "heart_btn_cancel") {
+            setItem(v.dataset.key, true);
+            this.render();
+          } else if (e.target.className === "heart_btn") {
+            removeItem(v.dataset.key);
+            this.render();
+          } else {
+            if (v.dataset.key) {
+              new ItemDetail({ $main, id: v.dataset.key }).render();
+            }
           }
-        }
-      })
-    );
-
+        })
+      );
+    }
     document.querySelector(".cart_btn").addEventListener("click", () => {
       routeChange("/cart");
     });
