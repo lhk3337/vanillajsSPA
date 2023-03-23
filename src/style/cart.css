@@ -1,0 +1,17 @@
+.home_btn {
+  position: absolute;
+  outline: none;
+  border: none;
+  top: 0;
+  right: -140px;
+  background-color: var(--secondary-color);
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  cursor: pointer;
+}
+.home_btn img {
+  color: var(--primary-color);
+  width: 30px;
+  height: 33.33px;
+}
