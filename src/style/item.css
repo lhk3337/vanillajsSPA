@@ -135,3 +135,31 @@
   color: var(--secondary-color);
   line-height: 20.03px;
 }
+
+/* item detail modal */
+
+.item_modal {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  background-color: #00000066;
+}
+.modal_content {
+  width: 990px;
+  position: absolute;
+  position: relative;
+  height: 600px;
+  left: 50%;
+  top: 5%;
+  transform: translate(-50%);
+  padding: 60px 60px 42px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+}
+.closeBtn {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+}

@@ -13,7 +13,7 @@ function App({ $target }) {
   this.route = () => {
     const { pathname } = location;
     if (pathname === "/") {
-      return new ItemList({ $main, apiData: response() }).render();
+      return new ItemList({ $target, $main, apiData: response() }).render();
     } else if (pathname === "/cart") {
       return new ItemCart({ $main }).render();
     }

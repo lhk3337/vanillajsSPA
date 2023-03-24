@@ -1,7 +1,7 @@
 import ItemDetail from "./itemDetail.js";
 import { getItem, setItem, removeItem } from "../../lib/storage.js";
 import { routeChange } from "../../lib/router.js";
-export default function ItemList({ $main, apiData }) {
+export default function ItemList({ $target, $main, apiData }) {
   this.render = async () => {
     const productData = await apiData;
 
@@ -19,7 +19,7 @@ export default function ItemList({ $main, apiData }) {
                 .map((value, i) => {
                   return `
                 <li class="product_list" data-key=${value.id}>
-                <img class="product_img" src=http://211.243.164.209:5000/${value.thumbnailImg} alt="thumbnailImg" />
+                  <img class="product_img" src=http://211.243.164.209:5000/${value.thumbnailImg} alt="thumbnailImg" />
                   <div class="product_content">
                     <div class="product_title">
                       <span>${
@@ -62,7 +62,8 @@ export default function ItemList({ $main, apiData }) {
             this.render();
           } else {
             if (v.dataset.key) {
-              new ItemDetail({ $main, id: v.dataset.key }).render();
+              new ItemDetail({ $target, id: v.dataset.key }).render();
+              document.body.style.overflow = "hidden";
             }
           }
         })
