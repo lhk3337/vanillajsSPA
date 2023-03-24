@@ -1,19 +1,37 @@
 import api from "../../lib/api.js";
 function ItemDetail({ $target, id }) {
   const data = async () => {
-    console.log(await (await api()).fetchProduct(id));
+    return await (await api()).fetchProduct(id);
   };
-  data();
 
   const $modal = document.createElement("div");
   $modal.className = "item_modal";
   $target.appendChild($modal);
-  this.render = () => {
+  this.render = async () => {
+    const { thumbnailImg, pubDate, stockCount, detailInfoImage } = await data();
     $modal.innerHTML = `
-    <div class="modal_content">
+    <div class="modal_container">
       <button class="closeBtn">
-        <img src="/src/assets/icon-delete.svg" alt="closeBtn" />
+      <img src="/src/assets/icon-delete.svg" alt="closeBtn" />
       </button>
+      <div class="modal_content">
+        <div class="product_top_info">
+          <img src=http://211.243.164.209:5000/${thumbnailImg} alt="thumbnailImg" />
+          <div class="product_buy"><span>결제하기</span></div>
+        </div>
+        <div class="product_desc">
+          <h1 class="name">상품 정보</h1>
+          <table>
+            <tr>
+              <td class="title">상품 번호</td>
+              <td class="content">${pubDate.replace(/\-/g, "")}</td>
+              <td class="title">재고 수량</td>
+              <td class="content">${stockCount > 0 ? `${stockCount}개` : "-"}</td>
+            </tr>
+          </table>
+          ${detailInfoImage.map((v) => `<img src=http://211.243.164.209:5000/${v} />`).join("")}
+        </div>
+      </div>
     </div>`;
 
     $modal.querySelector(".closeBtn").addEventListener("click", () => {
