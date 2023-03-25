@@ -1,10 +1,17 @@
 import ItemDetail from "./itemDetail.js";
+import api from "../../lib/api.js";
 import { getItem, setItem, removeItem } from "../../lib/storage.js";
 import { routeChange } from "../../lib/router.js";
 export default function ItemList({ $target, $main, apiData }) {
-  this.render = async () => {
-    const productData = await apiData;
+  this.data = async () => {
+    return {
+      apiAddr: (await api()).API_ADDR,
+      productData: await apiData,
+    };
+  };
 
+  this.render = async () => {
+    const { productData, apiAddr } = await this.data();
     // api데이터 호출이 실패 했을때 404 not found로 핸들러
     if (!productData) {
       $main.innerHTML = `
@@ -19,7 +26,8 @@ export default function ItemList({ $target, $main, apiData }) {
                 .map((value, i) => {
                   return `
                 <li class="product_list" data-key=${value.id}>
-                  <img class="product_img" src=http://211.243.164.209:5000/${value.thumbnailImg} alt="thumbnailImg" />
+                
+                  <img class="product_img" src=${apiAddr}/${value.thumbnailImg} alt="thumbnailImg" />
                   <div class="product_content">
                     <div class="product_title">
                       <span>${

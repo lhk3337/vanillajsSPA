@@ -1,14 +1,20 @@
 import api from "../../lib/api.js";
 function ItemDetail({ $target, id }) {
-  const data = async () => {
-    return await (await api()).fetchProduct(id);
+  this.data = async () => {
+    return {
+      apiAddr: (await api()).API_ADDR,
+      api: await (await api()).fetchProduct(id),
+    };
   };
 
   const $modal = document.createElement("div");
   $modal.className = "item_modal";
   $target.appendChild($modal);
   this.render = async () => {
-    const { thumbnailImg, pubDate, stockCount, detailInfoImage } = await data();
+    const {
+      api: { thumbnailImg, pubDate, stockCount, detailInfoImage },
+      apiAddr,
+    } = await this.data();
     $modal.innerHTML = `
     <div class="modal_container">
       <button class="closeBtn">
@@ -16,7 +22,7 @@ function ItemDetail({ $target, id }) {
       </button>
       <div class="modal_content">
         <div class="product_top_info">
-          <img src=http://211.243.164.209:5000/${thumbnailImg} alt="thumbnailImg" />
+          <img src=${apiAddr}/${thumbnailImg} alt="thumbnailImg" />
           <div class="product_buy"><span>결제하기</span></div>
         </div>
         <div class="product_desc">
@@ -29,7 +35,7 @@ function ItemDetail({ $target, id }) {
               <td class="content">${stockCount > 0 ? `${stockCount}개` : "-"}</td>
             </tr>
           </table>
-          ${detailInfoImage.map((v) => `<img src=http://211.243.164.209:5000/${v} />`).join("")}
+          ${detailInfoImage.map((v) => `<img src=${apiAddr}/${v} />`).join("")}
         </div>
       </div>
     </div>`;

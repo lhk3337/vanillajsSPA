@@ -17,6 +17,7 @@ export default async function api() {
   };
 
   return {
+    API_ADDR,
     fetchProductsList: async () => {
       return await request(`${API_ADDR}/mall`);
     },
