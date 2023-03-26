@@ -26,8 +26,10 @@ export default function ItemList({ $target, $main, apiData }) {
                 .map((value, i) => {
                   return `
                 <li class="product_list" data-key=${value.id}>
-                
-                  <img class="product_img" src=${apiAddr}/${value.thumbnailImg} alt="thumbnailImg" />
+                  <div class="img_container">
+                    <img class="product_img" src=${apiAddr}/${value.thumbnailImg} alt="thumbnailImg" />
+                    ${value.stockCount === 0 ? `<div class="soldout"><span>SOLDOUT</span></div>` : ``}
+                  </div>
                   <div class="product_content">
                     <div class="product_title">
                       <span>${

@@ -84,12 +84,37 @@
   color: var(--primary-text-color);
   cursor: pointer;
 }
-.product_img {
+.product_list .img_container {
+  position: relative;
+}
+
+.img_container .product_img {
   width: 380px;
   height: 380px;
   border-radius: 10px;
   border: 1px solid var(--primary-border-color);
 }
+.img_container .soldout {
+  position: absolute;
+  bottom: 30px;
+  width: 300px;
+  height: 40px;
+  border-radius: 5px;
+  left: 40px;
+  background-color: var(--primary-text-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.img_container .soldout span {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 18px;
+  color: var(--primary-color);
+}
+
 .product_content {
   margin-top: 20px;
 }
@@ -111,6 +136,7 @@
   height: 22px;
   background: url(../assets/icon-heart-on.svg) no-repeat center / contain;
 }
+
 .product_value {
   display: flex;
   align-items: center;
