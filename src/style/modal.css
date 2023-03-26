@@ -44,6 +44,7 @@
 }
 .modal_content .product_top_info {
   display: flex;
+  gap: 30px;
   margin-right: 37px;
 }
 .product_top_info img {
@@ -52,16 +53,47 @@
   border: 1px solid #c4c4c4;
   border-radius: 10px;
 }
+
+/* product buy input */
 .product_top_info .product_buy {
-  display: flex;
-  font-size: 3rem;
   width: 100%;
-  font-size: 2rem;
-  justify-content: center;
-  align-items: center;
   border: 1px solid black;
 }
 
+.product_buy .buy_info .buy_name {
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 30px;
+}
+
+.buy_info .buy_value {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+.buy_value .price {
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 30.5px;
+}
+.buy_value .origin_price {
+  color: var(--secondary-text-color);
+  font-size: px;
+  font-weight: 400;
+  margin: 0px 10px;
+  line-height: 20.03px;
+  text-decoration: line-through;
+}
+
+.buy_value .discount {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--secondary-color);
+  line-height: 20.03px;
+}
+
+/* 상품 정보 */
 .product_desc {
   display: flex;
   flex-direction: column;
@@ -78,10 +110,6 @@
   color: var(--primary-text-color);
   line-height: 20px;
   margin-bottom: 14px;
-}
-
-.product_desc img {
-  width: 100%;
 }
 
 .product_desc table {
@@ -102,4 +130,8 @@
 }
 .product_desc table .content {
   width: 285px;
+}
+
+.product_desc img {
+  width: 100%;
 }
