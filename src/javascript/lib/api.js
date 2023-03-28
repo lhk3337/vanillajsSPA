@@ -1,5 +1,5 @@
 export default async function api() {
-  const API_ADDR = "http://211.243.164.209:5000";
+  const API_ADDR = "https://test.api.weniv.co.kr";
   const request = async (url) => {
     try {
       const response = await fetch(url, {});

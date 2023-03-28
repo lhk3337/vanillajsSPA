@@ -1,5 +1,6 @@
 import api from "../../lib/api.js";
-function ItemDetail({ $target, id }) {
+import { getItem, setItem, removeItem } from "../../lib/storage.js";
+function ItemDetail({ $target, id, listRender }) {
   this.state = {};
 
   //상태를 변경 하는 메서드
@@ -22,7 +23,7 @@ function ItemDetail({ $target, id }) {
   $target.appendChild($modal);
 
   // 실질적 렌더링이 발생되는 메서드
-  this.render = async () => {
+  this.render = () => {
     if (this.state.apiData === null) {
       return ($modal.innerHTML = `
     <div class="modal_container">페이지를 찾을 수 없습니다.</div>
@@ -33,7 +34,7 @@ function ItemDetail({ $target, id }) {
     $modal.innerHTML = `
     <div class="modal_container">
       <button class="closeBtn">
-        <img src="/src/assets/icon-delete.svg" alt="closeBtn" />
+        <img src="/src/assets/icon-delete.svg" alt="closeBtn" /> 
       </button>
       <div class="modal_content"></div>
     </div>`;
@@ -45,7 +46,7 @@ function ItemDetail({ $target, id }) {
       $topInfo.className = "product_top_info";
       document.querySelector(".modal_content").appendChild($topInfo);
       $topInfo.innerHTML = `
-        <img src=${apiAddr}/${apiData?.thumbnailImg} alt="thumbnailImg" />
+        <img class="product_img" src=${apiAddr}/${apiData?.thumbnailImg} alt="thumbnailImg" />
         <div class="product_buy"></div>
       `;
 
@@ -79,9 +80,39 @@ function ItemDetail({ $target, id }) {
       $buyInput.className = "buy_input";
       document.querySelector(".product_buy").appendChild($buyInput);
       if (apiData?.stockCount > 0) {
-        $buyInput.innerHTML = `<h1>hello World</h1>`;
+        $buyInput.innerHTML = `
+          <div class="">
+            <div class="product_stock">
+              <button class="submit_btn">바로 구매</button>
+              <button class="addCart_btn">
+                <img src="/src/assets/icon-shopping-cart.svg" alt="addCartBtn" />
+              </button>
+              <button class="modal_heart_btn">
+                ${
+                  getItem(apiData?.id, "")
+                    ? `<img class="modal_heart_btn_on" src="/src/assets/icon-heart-on.svg" alt="heart_btn_on" />`
+                    : `<img class="modal_heart_btn_cancel" src="/src/assets/icon-heart.svg" alt="heart_btn" />`
+                }
+              </button>
+            </div>
+          </div>
+        `;
       } else {
-        $buyInput.innerHTML = `<div class="product_nostock"></div>`;
+        $buyInput.innerHTML = `
+          <div class="product_nostock">
+            <button class="submit_btn">품절된 상품입니다.</button>
+            <button class="addCart_btn">
+              <img src="/src/assets/icon-shopping-cart-white.svg" alt="addCartBtn" />
+            </button>
+            <button class="modal_heart_btn">
+              ${
+                getItem(apiData?.id, "")
+                  ? `<img class="modal_heart_btn_on" src="/src/assets/icon-heart-on.svg" alt="heart_btn_on" />`
+                  : `<img class="modal_heart_btn_cancel" src="/src/assets/icon-heart.svg" alt="heart_btn" />`
+              }
+            </button>
+          </div>
+        `;
       }
     };
     this.renderTopInfo();
@@ -107,8 +138,10 @@ function ItemDetail({ $target, id }) {
     this.renderProductDesc();
 
     // event 처리 부분
-    $modal.querySelector(".closeBtn").addEventListener("click", () => {
+    const $closeBtn = document.querySelector(".closeBtn");
+    $closeBtn.addEventListener("click", () => {
       $modal.remove();
+      listRender();
       document.body.style.overflow = "auto";
     });
     // 모달창에서 X버튼 클릭시 모달창 끄는 이벤트
@@ -117,10 +150,24 @@ function ItemDetail({ $target, id }) {
       const evTarget = e.target;
       if (evTarget.classList.contains("item_modal")) {
         $modal.remove();
+        listRender();
         document.body.style.overflow = "auto";
       }
     });
     // 모달창에서 모달창 의외에 클릭할때 모달창 끄는 이벤트
   };
+
+  // 반복으로 이벤트를 발생 시킬때 this.render내에 addEventListener가 있으면 느려져서 최상단에 위치 시킴
+  $modal.addEventListener("click", (e) => {
+    if (e.target.className === "modal_heart_btn_on") {
+      removeItem(id);
+      this.render();
+      listRender();
+    } else if (e.target.className === "modal_heart_btn_cancel") {
+      setItem(id, true);
+      this.render();
+      listRender();
+    }
+  });
 }
 export default ItemDetail;

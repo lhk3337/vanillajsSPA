@@ -35,7 +35,11 @@ export default function ItemList({ $target, $main, apiData }) {
                       <span>${
                         value.productName.length < 30 ? value.productName : value.productName.substring(0, 25)
                       }</span>
-                      ${getItem(value.id, "") ? `<button class="heart_btn" />` : `<button class="heart_btn_cancel" />`}
+                      ${
+                        getItem(value.id, "")
+                          ? `<button class="heart_btn_on" />`
+                          : `<button class="heart_btn_cancel" />`
+                      }
                     </div>
                     <div class="product_value">
                       ${
@@ -67,12 +71,12 @@ export default function ItemList({ $target, $main, apiData }) {
           if (e.target.className === "heart_btn_cancel") {
             setItem(v.dataset.key, true);
             this.render();
-          } else if (e.target.className === "heart_btn") {
+          } else if (e.target.className === "heart_btn_on") {
             removeItem(v.dataset.key);
             this.render();
           } else {
             if (v.dataset.key) {
-              new ItemDetail({ $target, id: v.dataset.key }).render();
+              new ItemDetail({ $target, id: v.dataset.key, listRender: () => this.render() }).render();
               document.body.style.overflow = "hidden";
             }
           }

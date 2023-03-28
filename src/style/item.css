@@ -131,7 +131,7 @@
   height: 22px;
   background: url(../assets/icon-heart.svg) no-repeat center / contain;
 }
-.product_title .heart_btn {
+.product_title .heart_btn_on {
   width: 22px;
   height: 22px;
   background: url(../assets/icon-heart-on.svg) no-repeat center / contain;
