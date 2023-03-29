@@ -44,12 +44,6 @@
   scrollbar-color: gray transparent;
 }
 
-.modal_content::-webkit-scrollbar {
-  width: 8px;
-}
-.modal_content::-webkit-scrollbar-track {
-  background-color: transparent;
-}
 .modal_content::-webkit-scrollbar-thumb {
   border-radius: 3px;
   background-color: gray;
