@@ -78,6 +78,15 @@
   align-items: center;
   margin-top: 10px;
 }
+.buy_info .shipping_info {
+  margin-top: 99px;
+  margin-bottom: 10px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--secondary-text-color);
+}
 .buy_value .price {
   font-weight: 700;
   font-size: 24px;
@@ -99,17 +108,25 @@
   line-height: 20.03px;
 }
 
-.buy_input .product_nostock {
+.buy_input .product_nostock_btns {
   margin-top: 270px;
   display: flex;
   gap: 6px;
 }
 
-.product_stock {
+.buy_input .count_container {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+  border-top: 2px solid var(--primary-line-color);
+  border-bottom: 2px solid var(--primary-line-color);
+}
+
+.product_stock_btns {
   display: flex;
   gap: 6px;
 }
-.product_stock .submit_btn {
+.product_stock_btns .submit_btn {
   width: 308px;
   height: 60px;
   background-color: var(--secondary-color);
@@ -121,7 +138,7 @@
   color: white;
   cursor: pointer;
 }
-.product_stock .addCart_btn {
+.product_stock_btns .addCart_btn {
   width: 60px;
   height: 60px;
   border-radius: 5px;
@@ -131,14 +148,17 @@
   justify-content: center;
   cursor: pointer;
 }
-.product_stock .modal_heart_btn {
+.product_stock_btns .modal_heart_btn {
   width: 60px;
   height: 60px;
   border: 1px solid var(--primary-border-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-radius: 5px;
 }
 
-.product_nostock .submit_btn {
+.product_nostock_btns .submit_btn {
   width: 308px;
   height: 60px;
   background-color: var(--primary-border-color);
@@ -150,7 +170,7 @@
   color: white;
   cursor: inherit;
 }
-.product_nostock .addCart_btn {
+.product_nostock_btns .addCart_btn {
   width: 60px;
   height: 60px;
   border-radius: 5px;
@@ -165,10 +185,13 @@
   height: 22px;
 }
 
-.product_nostock .modal_heart_btn {
+.product_nostock_btns .modal_heart_btn {
   width: 60px;
   height: 60px;
   border: 1px solid var(--primary-border-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-radius: 5px;
 }
 
@@ -198,8 +221,8 @@
 
 .product_desc table {
   width: 100%;
-  border-top: 2px solid #e0e0e0;
-  border-bottom: 2px solid #e0e0e0;
+  border-top: 2px solid var(--primary-line-color);
+  border-bottom: 2px solid var(--primary-line-color);
 }
 
 .product_desc table tr td {

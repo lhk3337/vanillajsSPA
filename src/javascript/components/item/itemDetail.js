@@ -6,7 +6,7 @@ function ItemDetail({ $target, id, listRender }) {
   //상태를 변경 하는 메서드
   this.setState = (nextState) => {
     this.state = nextState;
-    this.render();
+    this.Render();
   };
 
   // api 데이터를 받아오는 메서드
@@ -23,7 +23,7 @@ function ItemDetail({ $target, id, listRender }) {
   $target.appendChild($modal);
 
   // 실질적 렌더링이 발생되는 메서드
-  this.render = () => {
+  this.Render = () => {
     const { apiData, apiAddr } = this.state;
     if (!apiData) {
       $modal.innerHTML = `
@@ -45,7 +45,7 @@ function ItemDetail({ $target, id, listRender }) {
 
       // 상품 정보 위의 렌더링
       // 상품 이미지와 오른쪽 buy_info가 담겨질 components
-      this.renderTopInfo = () => {
+      this.RenderTopInfo = () => {
         const $topInfo = document.createElement("div");
         $topInfo.className = "product_top_info";
         document.querySelector(".modal_content").appendChild($topInfo);
@@ -54,39 +54,58 @@ function ItemDetail({ $target, id, listRender }) {
         <div class="product_buy"></div>
       `;
 
-        this.renderBuyInfo();
+        this.RenderBuyInfo();
       };
 
-      // 상품의 이름과 가격 젇보를 표시하는 component
-      this.renderBuyInfo = () => {
+      // 상품의 이름과 가격 정보를 표시하는 component
+      this.RenderBuyInfo = () => {
         const $buyInfo = document.createElement("div");
         $buyInfo.className = "buy_info";
         document.querySelector(".product_buy").appendChild($buyInfo);
         $buyInfo.innerHTML = `
         <span class="buy_name">${apiData?.productName}</span>
         <div class="buy_value">
+          ${
+            apiData?.discountRate
+              ? `<span class="price">${Math.floor(
+                  apiData?.price * ((100 - apiData?.discountRate) / 100)
+                ).toLocaleString("ko-KR")}</span>원`
+              : `<span class="price">${apiData?.price.toLocaleString("ko-KR")}</span>원`
+          }
+          ${
+            apiData?.discountRate ? `<span class="origin_price">${apiData?.price.toLocaleString("ko-KR")}원</span>` : ""
+          }
+          ${apiData.discountRate > 0 ? `<span class="discount">${apiData?.discountRate}%</span>` : ``}
+        </div>
         ${
-          apiData?.discountRate
-            ? `<span class="price">${Math.floor(apiData?.price * ((100 - apiData?.discountRate) / 100)).toLocaleString(
-                "ko-KR"
-              )}</span>원`
-            : `<span class="price">${apiData?.price.toLocaleString("ko-KR")}</span>원`
+          apiData.stockCount > 0
+            ? `
+            <div class="shipping_info">
+              <span>
+                택배배송 / ${
+                  apiData?.shippingFee > 0 ? `${apiData?.shippingFee.toLocaleString("ko-KR")}원` : "무료배송"
+                }
+              </span>
+            </div>
+            `
+            : ""
         }
-        ${apiData?.discountRate ? `<span class="origin_price">${apiData?.price.toLocaleString("ko-KR")}원</span>` : ""}
-        <span class="discount">${apiData?.discountRate > 0 ? `${apiData?.discountRate}%` : ""}</span>
+        
       `;
-        this.renderBuyInput();
+        this.RenderBuyInput();
       };
 
       // 상품의 갯수 선택, 상품의 옵션 선택, 구매버튼, 좋아요 버튼, 카트 모달버튼을 포함한 component
-      this.renderBuyInput = () => {
+      this.RenderBuyInput = () => {
         const $buyInput = document.createElement("div");
         $buyInput.className = "buy_input";
         document.querySelector(".product_buy").appendChild($buyInput);
         if (apiData?.stockCount > 0) {
           $buyInput.innerHTML = `
-          <div class="">
-            <div class="product_stock">
+            <div class="count_container">
+              옵션이 없으면 number count / 옵션이 있으면 seelect count
+            </div>
+            <div class="product_stock_btns">
               <button class="submit_btn">바로 구매</button>
               <button class="addCart_btn">
                 <img src="/src/assets/icon-shopping-cart.svg" alt="addCartBtn" />
@@ -99,11 +118,11 @@ function ItemDetail({ $target, id, listRender }) {
                 }
               </button>
             </div>
-          </div>
+          
         `;
         } else {
           $buyInput.innerHTML = `
-          <div class="product_nostock">
+          <div class="product_nostock_btns">
             <button class="submit_btn">품절된 상품입니다.</button>
             <button class="addCart_btn">
               <img src="/src/assets/icon-shopping-cart-white.svg" alt="addCartBtn" />
@@ -119,15 +138,15 @@ function ItemDetail({ $target, id, listRender }) {
         `;
         }
       };
-      this.renderTopInfo();
+      this.RenderTopInfo();
 
       // 상품 번호, 상품 수량, 상품 상세 페이지 정보를 가지고 있는 component
-      this.renderProductDesc = () => {
+      this.RenderProductDesc = () => {
         const $productDesc = document.createElement("div");
         document.querySelector(".modal_content").appendChild($productDesc);
         $productDesc.className = "product_desc";
         $productDesc.innerHTML = `
-      <h1 class="name">상품 정보</h1>
+          <h1 class="name">상품 정보</h1>
           <table>
             <tr>
               <td class="title">상품 번호</td>
@@ -139,7 +158,7 @@ function ItemDetail({ $target, id, listRender }) {
           ${apiData?.detailInfoImage.map((v) => `<img src=${apiAddr}/${v} />`).join("")}
       `;
       };
-      this.renderProductDesc();
+      this.RenderProductDesc();
 
       // event 처리 부분
       const $closeBtn = document.querySelector(".closeBtn");
@@ -165,11 +184,11 @@ function ItemDetail({ $target, id, listRender }) {
   $modal.addEventListener("click", (e) => {
     if (e.target.className === "modal_heart_btn_on") {
       removeItem(id);
-      this.render();
+      this.Render();
       listRender();
     } else if (e.target.className === "modal_heart_btn_cancel") {
       setItem(id, true);
-      this.render();
+      this.Render();
       listRender();
     }
   });

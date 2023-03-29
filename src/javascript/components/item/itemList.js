@@ -76,7 +76,7 @@ export default function ItemList({ $target, $main, apiData }) {
             this.render();
           } else {
             if (v.dataset.key) {
-              new ItemDetail({ $target, id: v.dataset.key, listRender: () => this.render() }).render();
+              new ItemDetail({ $target, id: v.dataset.key, listRender: () => this.render() }).Render();
               document.body.style.overflow = "hidden";
             }
           }
