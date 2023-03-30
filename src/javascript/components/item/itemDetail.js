@@ -1,7 +1,7 @@
 import api from "../../lib/api.js";
 import { getItem, setItem, removeItem } from "../../lib/storage.js";
 function ItemDetail({ $target, id, listRender }) {
-  this.state = {};
+  this.state = { apiAddr: null, apiData: null, liked: Boolean(getItem(id, "")) };
 
   //상태를 변경 하는 메서드
   this.setState = (nextState) => {
@@ -31,7 +31,7 @@ function ItemDetail({ $target, id, listRender }) {
         <button class="closeBtn">
           <img src="/src/assets/icon-delete.svg" alt="closeBtn" /> 
         </button>
-        <div class="modal_loading"><h1>Loading...</h1></div>
+        <!-- <div class="modal_loading"><h1>Loading...</h1></div> -->
       </div>
     `;
     } else {
@@ -112,7 +112,7 @@ function ItemDetail({ $target, id, listRender }) {
               </button>
               <button class="modal_heart_btn">
                 ${
-                  getItem(apiData?.id, "")
+                  this.state.liked
                     ? `<img class="modal_heart_btn_on" src="/src/assets/icon-heart-on.svg" alt="heart_btn_on" />`
                     : `<img class="modal_heart_btn_cancel" src="/src/assets/icon-heart.svg" alt="heart_btn" />`
                 }
@@ -129,7 +129,7 @@ function ItemDetail({ $target, id, listRender }) {
             </button>
             <button class="modal_heart_btn">
               ${
-                getItem(apiData?.id, "")
+                this.state.liked
                   ? `<img class="modal_heart_btn_on" src="/src/assets/icon-heart-on.svg" alt="heart_btn_on" />`
                   : `<img class="modal_heart_btn_cancel" src="/src/assets/icon-heart.svg" alt="heart_btn" />`
               }
@@ -165,7 +165,7 @@ function ItemDetail({ $target, id, listRender }) {
       $closeBtn.addEventListener("click", () => {
         $modal.remove();
         listRender();
-        document.body.style.overflow = "auto";
+        document.body.style.overflow = "";
       });
       // 모달창에서 X버튼 클릭시 모달창 끄는 이벤트
 
@@ -174,22 +174,26 @@ function ItemDetail({ $target, id, listRender }) {
         if (evTarget.classList.contains("item_modal")) {
           $modal.remove();
           listRender();
-          document.body.style.overflow = "auto";
+          document.body.style.overflow = "";
         }
       });
       // 모달창에서 모달창 의외에 클릭할때 모달창 끄는 이벤트
     }
   };
   // 반복으로 이벤트를 발생 시킬때 this.render내에 addEventListener가 있으면 느려져서 최상단에 위치 시킴
-  $modal.addEventListener("click", (e) => {
-    if (e.target.className === "modal_heart_btn_on") {
-      removeItem(id);
-      this.Render();
-      listRender();
-    } else if (e.target.className === "modal_heart_btn_cancel") {
-      setItem(id, true);
-      this.Render();
-      listRender();
+  $modal.addEventListener("click", (event) => {
+    if (event.target.className === "modal_heart_btn_on") {
+      if (this.state.liked) {
+        this.setState({ ...this.state, liked: false });
+        removeItem(id);
+        listRender();
+      }
+    } else if (event.target.className === "modal_heart_btn_cancel") {
+      if (!this.state.liked) {
+        this.setState({ ...this.state, liked: true });
+        setItem(id, true);
+        listRender();
+      }
     }
   });
 }

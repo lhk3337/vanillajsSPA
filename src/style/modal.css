@@ -25,7 +25,7 @@
   top: 20px;
 }
 
-.modal_loading {
+/* .modal_loading {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,7 +34,7 @@
   line-height: 15rem;
   font-size: 3rem;
   font-weight: 800;
-}
+} */
 
 .modal_content {
   width: 100%;
