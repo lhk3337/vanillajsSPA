@@ -12,7 +12,7 @@ function ItemDetail({ $target, id, listRender }) {
 
   this.setLikeState = (nextState) => {
     this.likeState = nextState;
-    this.RenderBuyInput();
+    this.likedButton(); // 좋아요 버튼 클릭 좋아요 버튼 컴포넌트 리랜더링
   };
   // api 데이터를 받아오는 메서드
   this.data = async () => {
@@ -55,7 +55,7 @@ function ItemDetail({ $target, id, listRender }) {
         $topInfo.className = "product_top_info";
         document.querySelector(".modal_content").appendChild($topInfo);
         $topInfo.innerHTML = `
-        <img class="product_img" src=${apiAddr}/${apiData?.thumbnailImg} alt="thumbnailImg" />
+        <img class="product_img" src=${apiAddr}/${apiData.thumbnailImg} alt="thumbnailImg" />
         <div class="product_buy"></div>
       `;
 
@@ -71,25 +71,21 @@ function ItemDetail({ $target, id, listRender }) {
         <span class="buy_name">${apiData?.productName}</span>
         <div class="buy_value">
           ${
-            apiData?.discountRate
+            apiData.discountRate
               ? `<span class="price">${Math.floor(
                   apiData?.price * ((100 - apiData?.discountRate) / 100)
                 ).toLocaleString("ko-KR")}</span>원`
               : `<span class="price">${apiData?.price.toLocaleString("ko-KR")}</span>원`
           }
-          ${
-            apiData?.discountRate ? `<span class="origin_price">${apiData?.price.toLocaleString("ko-KR")}원</span>` : ""
-          }
-          ${apiData.discountRate > 0 ? `<span class="discount">${apiData?.discountRate}%</span>` : ``}
+          ${apiData.discountRate ? `<span class="origin_price">${apiData.price.toLocaleString("ko-KR")}원</span>` : ""}
+          ${apiData.discountRate > 0 ? `<span class="discount">${apiData.discountRate}%</span>` : ``}
         </div>
         ${
           apiData.stockCount > 0
             ? `
             <div class="shipping_info">
               <span>
-                택배배송 / ${
-                  apiData?.shippingFee > 0 ? `${apiData?.shippingFee.toLocaleString("ko-KR")}원` : "무료배송"
-                }
+                택배배송 / ${apiData.shippingFee > 0 ? `${apiData.shippingFee.toLocaleString("ko-KR")}원` : "무료배송"}
               </span>
             </div>
             `
@@ -105,7 +101,7 @@ function ItemDetail({ $target, id, listRender }) {
       $buyInput.className = "buy_input";
       this.RenderBuyInput = () => {
         document.querySelector(".product_buy").appendChild($buyInput);
-        if (apiData?.stockCount > 0) {
+        if (apiData.stockCount > 0) {
           $buyInput.innerHTML = `
             <div class="count_container">
               옵션이 없으면 number count / 옵션이 있으면 seelect count
@@ -115,16 +111,10 @@ function ItemDetail({ $target, id, listRender }) {
               <button class="addCart_btn">
                 <img src="/src/assets/icon-shopping-cart.svg" alt="addCartBtn" />
               </button>
-              <button class="modal_heart_btn">
-                ${
-                  this.likeState.liked
-                    ? `<img class="modal_heart_btn_on" src="/src/assets/icon-heart-on.svg" alt="heart_btn_on" />`
-                    : `<img class="modal_heart_btn_cancel" src="/src/assets/icon-heart.svg" alt="heart_btn" />`
-                }
-              </button>
             </div>
           
         `;
+          this.likedButton(); // 좋아요 버튼 컴포넌트 호출
         } else {
           $buyInput.innerHTML = `
           <div class="product_nostock_btns">
@@ -132,16 +122,29 @@ function ItemDetail({ $target, id, listRender }) {
             <button class="addCart_btn">
               <img src="/src/assets/icon-shopping-cart-white.svg" alt="addCartBtn" />
             </button>
-            <button class="modal_heart_btn">
-              ${
-                this.likeState.liked
-                  ? `<img class="modal_heart_btn_on" src="/src/assets/icon-heart-on.svg" alt="heart_btn_on" />`
-                  : `<img class="modal_heart_btn_cancel" src="/src/assets/icon-heart.svg" alt="heart_btn" />`
-              }
-            </button>
           </div>
         `;
+          this.likedButton(); // 좋아요 버튼 컴포넌트 호출
         }
+      };
+
+      // 좋아요 버튼 컴포넌트
+      const $likedbtn = document.createElement("button");
+      $likedbtn.className = "modal_heart_btn";
+
+      this.likedButton = () => {
+        if (apiData.stockCount > 0) {
+          document.querySelector(".product_stock_btns").appendChild($likedbtn);
+        } else {
+          document.querySelector(".product_nostock_btns").appendChild($likedbtn);
+        }
+        $likedbtn.innerHTML = `
+          ${
+            this.likeState.liked
+              ? `<img class="modal_heart_btn_on" src="/src/assets/icon-heart-on.svg" alt="heart_btn_on" />`
+              : `<img class="modal_heart_btn_cancel" src="/src/assets/icon-heart.svg" alt="heart_btn" />`
+          }
+        `;
       };
       this.RenderTopInfo();
 
