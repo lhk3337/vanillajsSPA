@@ -1,7 +1,8 @@
 import api from "../../lib/api.js";
 import { getItem, setItem, removeItem } from "../../lib/storage.js";
 function ItemDetail({ $target, id, listRender }) {
-  this.state = { apiAddr: null, apiData: null, liked: Boolean(getItem(id, "")) };
+  this.state = { apiAddr: null, apiData: null };
+  this.likeState = { liked: Boolean(getItem(id, "")) };
 
   //상태를 변경 하는 메서드
   this.setState = (nextState) => {
@@ -9,6 +10,10 @@ function ItemDetail({ $target, id, listRender }) {
     this.Render();
   };
 
+  this.setLikeState = (nextState) => {
+    this.likeState = nextState;
+    this.RenderBuyInput();
+  };
   // api 데이터를 받아오는 메서드
   this.data = async () => {
     const apiAddr = (await api()).API_ADDR;
@@ -58,9 +63,9 @@ function ItemDetail({ $target, id, listRender }) {
       };
 
       // 상품의 이름과 가격 정보를 표시하는 component
+      const $buyInfo = document.createElement("div");
+      $buyInfo.className = "buy_info";
       this.RenderBuyInfo = () => {
-        const $buyInfo = document.createElement("div");
-        $buyInfo.className = "buy_info";
         document.querySelector(".product_buy").appendChild($buyInfo);
         $buyInfo.innerHTML = `
         <span class="buy_name">${apiData?.productName}</span>
@@ -96,9 +101,9 @@ function ItemDetail({ $target, id, listRender }) {
       };
 
       // 상품의 갯수 선택, 상품의 옵션 선택, 구매버튼, 좋아요 버튼, 카트 모달버튼을 포함한 component
+      const $buyInput = document.createElement("div");
+      $buyInput.className = "buy_input";
       this.RenderBuyInput = () => {
-        const $buyInput = document.createElement("div");
-        $buyInput.className = "buy_input";
         document.querySelector(".product_buy").appendChild($buyInput);
         if (apiData?.stockCount > 0) {
           $buyInput.innerHTML = `
@@ -112,7 +117,7 @@ function ItemDetail({ $target, id, listRender }) {
               </button>
               <button class="modal_heart_btn">
                 ${
-                  this.state.liked
+                  this.likeState.liked
                     ? `<img class="modal_heart_btn_on" src="/src/assets/icon-heart-on.svg" alt="heart_btn_on" />`
                     : `<img class="modal_heart_btn_cancel" src="/src/assets/icon-heart.svg" alt="heart_btn" />`
                 }
@@ -129,7 +134,7 @@ function ItemDetail({ $target, id, listRender }) {
             </button>
             <button class="modal_heart_btn">
               ${
-                this.state.liked
+                this.likeState.liked
                   ? `<img class="modal_heart_btn_on" src="/src/assets/icon-heart-on.svg" alt="heart_btn_on" />`
                   : `<img class="modal_heart_btn_cancel" src="/src/assets/icon-heart.svg" alt="heart_btn" />`
               }
@@ -141,9 +146,9 @@ function ItemDetail({ $target, id, listRender }) {
       this.RenderTopInfo();
 
       // 상품 번호, 상품 수량, 상품 상세 페이지 정보를 가지고 있는 component
+      const $productDesc = document.createElement("div");
+      document.querySelector(".modal_content").appendChild($productDesc);
       this.RenderProductDesc = () => {
-        const $productDesc = document.createElement("div");
-        document.querySelector(".modal_content").appendChild($productDesc);
         $productDesc.className = "product_desc";
         $productDesc.innerHTML = `
           <h1 class="name">상품 정보</h1>
@@ -181,18 +186,21 @@ function ItemDetail({ $target, id, listRender }) {
     }
   };
   // 반복으로 이벤트를 발생 시킬때 this.render내에 addEventListener가 있으면 느려져서 최상단에 위치 시킴
+
   $modal.addEventListener("click", (event) => {
     if (event.target.className === "modal_heart_btn_on") {
-      if (this.state.liked) {
-        this.setState({ ...this.state, liked: false });
+      if (this.likeState.liked) {
+        // this.setState({ ...this.state, liked: false });
+        this.setLikeState({ liked: false });
         removeItem(id);
         listRender();
       }
     } else if (event.target.className === "modal_heart_btn_cancel") {
-      if (!this.state.liked) {
-        this.setState({ ...this.state, liked: true });
+      if (!this.likeState.liked) {
+        // this.setState({ ...this.state, liked: true });
         setItem(id, true);
         listRender();
+        this.setLikeState({ liked: true });
       }
     }
   });
