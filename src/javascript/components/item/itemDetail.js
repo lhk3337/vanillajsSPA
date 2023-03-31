@@ -9,7 +9,8 @@ function ItemDetail({ $target, id, listRender }) {
     this.state = nextState;
     this.Render();
   };
-
+  this.selectedOptions = [];
+  // 좋아요 상태 변경 메서드
   this.setLikeState = (nextState) => {
     this.likeState = nextState;
     this.likedButton(); // 좋아요 버튼 클릭 좋아요 버튼 컴포넌트 리랜더링
@@ -27,7 +28,7 @@ function ItemDetail({ $target, id, listRender }) {
   $modal.className = "item_modal";
   $target.appendChild($modal);
 
-  // 실질적 렌더링이 발생되는 메서드
+  // 메인 component, 렌더링이 발생되는 메서드
   this.Render = () => {
     const { apiData, apiAddr } = this.state;
     if (!apiData) {
@@ -59,7 +60,7 @@ function ItemDetail({ $target, id, listRender }) {
         <div class="product_buy"></div>
       `;
 
-        this.RenderBuyInfo();
+        this.RenderBuyInfo(); // 하위 컴포넌트 호출
       };
 
       // 상품의 이름과 가격 정보를 표시하는 component
@@ -93,7 +94,7 @@ function ItemDetail({ $target, id, listRender }) {
         }
         
       `;
-        this.RenderBuyInput();
+        this.RenderBuyInput(); //  하위 컴포넌트 호출
       };
 
       // 상품의 갯수 선택, 상품의 옵션 선택, 구매버튼, 좋아요 버튼, 카트 모달버튼을 포함한 component
@@ -101,10 +102,70 @@ function ItemDetail({ $target, id, listRender }) {
       $buyInput.className = "buy_input";
       this.RenderBuyInput = () => {
         document.querySelector(".product_buy").appendChild($buyInput);
+
         if (apiData.stockCount > 0) {
           $buyInput.innerHTML = `
             <div class="count_container">
-              옵션이 없으면 number count / 옵션이 있으면 seelect count
+              ${
+                Array.isArray(apiData.option) && apiData.option.length === 0
+                  ? `<input type="number" name="" id="" />`
+                  : `
+                  <div class="option__container">
+                  <div class="select-box">
+                    <div class="options-container">
+                      ${apiData.option
+                        .map(
+                          (v) => `
+                      <div class="option">
+                        <input type="radio" class="radio" id="${v.id}" value="${v.id}" name="category" />
+                        <label for="${v.id}">${v.optionName} ${
+                            v.additionalFee > 0 ? `(+${v.additionalFee}원)` : ""
+                          }</label>
+                      </div>
+                      `
+                        )
+                        .join("")}
+                    </div>
+                    <div class="selected">옵션을 선택하세요</div>
+                  </div>
+                  ${this.selectedOptions
+                    .map(
+                      (selectedOption) => `
+                  <div class="option__count">
+                    <button class="close__option__Btn" data-option-id="${
+                      selectedOption.optionId
+                    }"><img src="/src/assets/icon-delete.svg" /></button>
+                    <h3 class="option__title">${selectedOption.optionName}</h3>
+                    <div class="option__price__container">
+                      <div class="option__count__container" data-count-id="${selectedOption.optionId}">
+                        <button id="option__minus__btn">
+                          <img class="minus" src="/src/assets/icon-minus-line.svg" />
+                        </button>
+                        <input type="number" class="option__input__count" min="1" max="${stockCount}" value="${
+                        selectedOption.qty
+                      }"  data-option-inputid="${selectedOption.optionId}"/>
+                        <button id="option__plus__btn">
+                          <img class="plus" src="/src/assets/icon-plus-line.svg" />
+                        </button>
+                      </div>
+                      <div>
+                        <span class="option__total__price">${
+                          discountRate > 0
+                            ? ((discountPrice + selectedOption.optionPrice) * selectedOption.qty).toLocaleString(
+                                "ko-KR"
+                              )
+                            : (selectedOption.qty * (price + selectedOption.optionPrice)).toLocaleString("ko-KR")
+                        }</span>
+                      </div>
+                    </div>
+                  </div>
+                  `
+                    )
+                    .join("")}
+                </div>
+                  `
+              }
+              
             </div>
             <div class="product_stock_btns">
               <button class="submit_btn">바로 구매</button>
@@ -114,7 +175,7 @@ function ItemDetail({ $target, id, listRender }) {
             </div>
           
         `;
-          this.likedButton(); // 좋아요 버튼 컴포넌트 호출
+          this.likedButton(); // 좋아요 버튼 요소 컴포넌트 호출
         } else {
           $buyInput.innerHTML = `
           <div class="product_nostock_btns">
@@ -124,7 +185,7 @@ function ItemDetail({ $target, id, listRender }) {
             </button>
           </div>
         `;
-          this.likedButton(); // 좋아요 버튼 컴포넌트 호출
+          this.likedButton(); // 좋아요 버튼 요소 컴포넌트 호출
         }
       };
 

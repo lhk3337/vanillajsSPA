@@ -63,7 +63,7 @@
 /* product buy input */
 .product_top_info .product_buy {
   width: 100%;
-  border: 1px solid black;
+  /* border: 1px solid black; */
 }
 
 .product_buy .buy_info .buy_name {
@@ -120,6 +120,87 @@
   margin-bottom: 16px;
   border-top: 2px solid var(--primary-line-color);
   border-bottom: 2px solid var(--primary-line-color);
+}
+
+/* select tag */
+
+.option__container .select-box {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.select-box .options-container {
+  background-color: #ffff;
+  border: 1px solid #c4c4c4;
+  color: #333333;
+  max-height: 0;
+  width: 100%;
+  opacity: 0;
+  position: absolute;
+  top: 50px;
+  z-index: 5;
+  transition: all 0.4s;
+  border-radius: 8px;
+  overflow: hidden;
+  order: 1;
+}
+
+.select-box .selected {
+  background-color: #ffff;
+  border: 1px solid #bdbdbd;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  color: #828282;
+  padding: 11px 14px;
+  position: relative;
+  order: 0;
+}
+.select-box .selected::after {
+  content: "";
+  background: url("../assets/icon-Triangle-down.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  height: 100%;
+  width: 12px;
+  right: 10px;
+  top: 14px;
+}
+
+.select-box .options-container.active {
+  max-height: 240px;
+  opacity: 1;
+  z-index: 5;
+}
+
+.select-box .options-container.active + .selected::after {
+  transform: rotateX(180deg);
+  top: -15px;
+}
+
+.select-box .options-container::-webkit-scrollbar {
+  display: none !important;
+}
+
+.select-box .option,
+.selected {
+  cursor: pointer;
+}
+.select-box .option {
+  margin: 9px 8px;
+  padding: 7px 10px;
+}
+.select-box .option:hover {
+  background-color: #f8f5ff;
+  border-radius: 5px;
+}
+
+.select-box label {
+  cursor: pointer;
+}
+.select-box .option .radio {
+  display: none;
 }
 
 .product_stock_btns {
