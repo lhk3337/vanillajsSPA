@@ -104,69 +104,9 @@ function ItemDetail({ $target, id, listRender }) {
         document.querySelector(".product_buy").appendChild($buyInput);
 
         if (apiData.stockCount > 0) {
-          $buyInput.innerHTML = `
-            <div class="count_container">
-              ${
-                Array.isArray(apiData.option) && apiData.option.length === 0
-                  ? `<input type="number" name="" id="" />`
-                  : `
-                  <div class="option__container">
-                  <div class="select-box">
-                    <div class="options-container">
-                      ${apiData.option
-                        .map(
-                          (v) => `
-                      <div class="option">
-                        <input type="radio" class="radio" id="${v.id}" value="${v.id}" name="category" />
-                        <label for="${v.id}">${v.optionName} ${
-                            v.additionalFee > 0 ? `(+${v.additionalFee}원)` : ""
-                          }</label>
-                      </div>
-                      `
-                        )
-                        .join("")}
-                    </div>
-                    <div class="selected">옵션을 선택하세요</div>
-                  </div>
-                  ${this.selectedOptions
-                    .map(
-                      (selectedOption) => `
-                  <div class="option__count">
-                    <button class="close__option__Btn" data-option-id="${
-                      selectedOption.optionId
-                    }"><img src="/src/assets/icon-delete.svg" /></button>
-                    <h3 class="option__title">${selectedOption.optionName}</h3>
-                    <div class="option__price__container">
-                      <div class="option__count__container" data-count-id="${selectedOption.optionId}">
-                        <button id="option__minus__btn">
-                          <img class="minus" src="/src/assets/icon-minus-line.svg" />
-                        </button>
-                        <input type="number" class="option__input__count" min="1" max="${stockCount}" value="${
-                        selectedOption.qty
-                      }"  data-option-inputid="${selectedOption.optionId}"/>
-                        <button id="option__plus__btn">
-                          <img class="plus" src="/src/assets/icon-plus-line.svg" />
-                        </button>
-                      </div>
-                      <div>
-                        <span class="option__total__price">${
-                          discountRate > 0
-                            ? ((discountPrice + selectedOption.optionPrice) * selectedOption.qty).toLocaleString(
-                                "ko-KR"
-                              )
-                            : (selectedOption.qty * (price + selectedOption.optionPrice)).toLocaleString("ko-KR")
-                        }</span>
-                      </div>
-                    </div>
-                  </div>
-                  `
-                    )
-                    .join("")}
-                </div>
-                  `
-              }
-              
-            </div>
+          if (Array.isArray(apiData.option) && apiData.option.length === 0) {
+            $buyInput.innerHTML = `
+            <div class="count_container"></div>
             <div class="product_stock_btns">
               <button class="submit_btn">바로 구매</button>
               <button class="addCart_btn">
@@ -175,6 +115,21 @@ function ItemDetail({ $target, id, listRender }) {
             </div>
           
         `;
+            this.Count();
+          } else {
+            $buyInput.innerHTML = `
+            <div class="count_container"></div>
+            <div class="product_stock_btns">
+              <button class="submit_btn">바로 구매</button>
+              <button class="addCart_btn">
+                <img src="/src/assets/icon-shopping-cart.svg" alt="addCartBtn" />
+              </button>
+            </div>
+          
+        `;
+            this.OptionCount();
+          }
+
           this.likedButton(); // 좋아요 버튼 요소 컴포넌트 호출
         } else {
           $buyInput.innerHTML = `
@@ -187,6 +142,23 @@ function ItemDetail({ $target, id, listRender }) {
         `;
           this.likedButton(); // 좋아요 버튼 요소 컴포넌트 호출
         }
+      };
+
+      const $option__container = document.createElement("div");
+      const $counter = document.createElement("div");
+      $counter.className = "count__number";
+      $option__container.className = "option__container";
+
+      // option이 없을 경우 Count 컴포넌트
+      this.Count = () => {
+        document.querySelector(".count_container").appendChild($counter);
+        $counter.innerHTML = `<div>Count</div>`;
+      };
+
+      // option Count 컴포넌트
+      this.OptionCount = () => {
+        document.querySelector(".count_container").appendChild($option__container);
+        $option__container.innerHTML = `<div class="select-box">HHHH</div>`;
       };
 
       // 좋아요 버튼 컴포넌트
