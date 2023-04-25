@@ -122,6 +122,60 @@
   border-bottom: 2px solid var(--primary-line-color);
 }
 
+.count_container .number_count_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 122px;
+  height: 40px;
+  padding: 0px 11px;
+  border: 1px solid var(--primary-border-color);
+  border-radius: 5px;
+
+  box-sizing: border-box;
+}
+.minBtn {
+  width: 20px;
+  height: 20px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+.minBtn img {
+  width: 100%;
+  height: 100%;
+}
+.plusBtn {
+  width: 20px;
+  height: 20px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.plusBtn img {
+  width: 100%;
+  height: 100%;
+}
+.numberCount {
+  outline: none;
+  border: none;
+  -moz-appearance: textfield;
+  width: 38px;
+  height: 95%;
+  border: 1px solid var(--primary-border-color);
+  text-align: center;
+}
+.numberCount::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+.numberCount::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
 /* select tag */
 
 .option__container .select-box {

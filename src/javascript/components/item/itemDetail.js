@@ -125,7 +125,6 @@ function ItemDetail({ $target, id, listRender }) {
                 <img src="/src/assets/icon-shopping-cart.svg" alt="addCartBtn" />
               </button>
             </div>
-          
         `;
             this.OptionCount();
           }
@@ -152,7 +151,12 @@ function ItemDetail({ $target, id, listRender }) {
       // option이 없을 경우 Count 컴포넌트
       this.Count = () => {
         document.querySelector(".count_container").appendChild($counter);
-        $counter.innerHTML = `<div>Count</div>`;
+        $counter.innerHTML = `
+        <div class="number_count_container">
+          <button class="minBtn"><img src="/src/assets/minus-icon-bg-white.svg" alt="minusCount" /></button>
+          <input class="numberCount" type="number" value="1" min="1" />
+          <button class="plusBtn"><img src="/src/assets/plus-icon-bg-white.svg" alt="plusCount" /></button>
+        </div>`;
       };
 
       // option Count 컴포넌트
@@ -219,6 +223,39 @@ function ItemDetail({ $target, id, listRender }) {
         }
       });
       // 모달창에서 모달창 의외에 클릭할때 모달창 끄는 이벤트
+
+      // option이 없는 경우 수량 카운트 input number handler
+      const $minBtn = document.querySelector(".minBtn");
+      const $plusBtn = document.querySelector(".plusBtn");
+      const $numberCount = document.querySelector(".numberCount");
+      $numberCount.onkeydown = (e) => {
+        // 숫자, 백스페이스, 위아래 화살표 키 설정하기 (양수만 입력 가능)
+        if (
+          !(
+            (e.keyCode > 95 && e.keyCode < 106) ||
+            (e.keyCode > 47 && e.keyCode < 58) ||
+            e.keyCode == 8 ||
+            e.keyCode == 38 ||
+            e.keyCode == 40
+          )
+        ) {
+          return false;
+        }
+      };
+      $minBtn.addEventListener("click", (e) => {
+        // - 버튼 클릭 시 input value -1씩 감소
+        let value = $numberCount.value;
+        value--;
+        if (value > 0) {
+          $numberCount.value = value;
+        }
+      });
+      $plusBtn.addEventListener("click", (e) => {
+        // + 버튼 클릭 시 input value +1씩 증가
+        let value = $numberCount.value;
+        value++;
+        $numberCount.value = value;
+      });
     }
   };
   // 반복으로 이벤트를 발생 시킬때 this.render내에 addEventListener가 있으면 느려져서 최상단에 위치 시킴
