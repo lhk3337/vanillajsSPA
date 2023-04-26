@@ -154,7 +154,7 @@ function ItemDetail({ $target, id, listRender }) {
         $counter.innerHTML = `
         <div class="number_count_container">
           <button class="minBtn"><img src="/src/assets/minus-icon-bg-white.svg" alt="minusCount" /></button>
-          <input class="numberCount" type="number" value="1" min="1" />
+          <input class="numberCount" type="number" value="1" min="1" max=${apiData?.stockCount} />
           <button class="plusBtn"><img src="/src/assets/plus-icon-bg-white.svg" alt="plusCount" /></button>
         </div>`;
       };
@@ -242,6 +242,12 @@ function ItemDetail({ $target, id, listRender }) {
           return false;
         }
       };
+      $numberCount.addEventListener("input", (e) => {
+        const lengths = apiData?.stockCount;
+        if (e.target.value > lengths) {
+          e.target.value = lengths;
+        }
+      });
       $minBtn.addEventListener("click", (e) => {
         // - 버튼 클릭 시 input value -1씩 감소
         let value = $numberCount.value;
@@ -253,7 +259,9 @@ function ItemDetail({ $target, id, listRender }) {
       $plusBtn.addEventListener("click", (e) => {
         // + 버튼 클릭 시 input value +1씩 증가
         let value = $numberCount.value;
-        value++;
+        if (value < apiData?.stockCount) {
+          value++;
+        }
         $numberCount.value = value;
       });
     }
