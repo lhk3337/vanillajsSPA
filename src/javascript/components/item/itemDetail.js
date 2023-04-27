@@ -3,7 +3,7 @@ import { getItem, setItem, removeItem } from "../../lib/storage.js";
 function ItemDetail({ $target, id, listRender }) {
   this.state = { apiAddr: null, apiData: null };
   this.likeState = { liked: Boolean(getItem(id, "")) };
-
+  this.countState = { value: 1 };
   //상태를 변경 하는 메서드
   this.setState = (nextState) => {
     this.state = nextState;
@@ -20,6 +20,10 @@ function ItemDetail({ $target, id, listRender }) {
     const apiAddr = (await api()).API_ADDR;
     const apiData = await (await api()).fetchProduct(id);
     this.setState({ ...this.state, apiAddr, apiData });
+  };
+  this.setcountState = (nextState) => {
+    this.countState = nextState;
+    this.noOptionTotalCount();
   };
 
   this.data();
@@ -106,7 +110,8 @@ function ItemDetail({ $target, id, listRender }) {
         if (apiData.stockCount > 0) {
           if (Array.isArray(apiData.option) && apiData.option.length === 0) {
             $buyInput.innerHTML = `
-            <div class="count_container"></div>
+            <div class="count_input_container"></div>
+            <div class="total_price_container"></div>
             <div class="product_stock_btns">
               <button class="submit_btn">바로 구매</button>
               <button class="addCart_btn">
@@ -116,9 +121,10 @@ function ItemDetail({ $target, id, listRender }) {
           
         `;
             this.Count();
+            this.noOptionTotalCount();
           } else {
             $buyInput.innerHTML = `
-            <div class="count_container"></div>
+            <div class="count_input_container"></div>
             <div class="product_stock_btns">
               <button class="submit_btn">바로 구매</button>
               <button class="addCart_btn">
@@ -145,23 +151,34 @@ function ItemDetail({ $target, id, listRender }) {
 
       const $option__container = document.createElement("div");
       const $counter = document.createElement("div");
-      $counter.className = "count__number";
+      $counter.className = "count__number_container";
       $option__container.className = "option__container";
 
       // option이 없을 경우 Count 컴포넌트
       this.Count = () => {
-        document.querySelector(".count_container").appendChild($counter);
+        document.querySelector(".count_input_container").appendChild($counter);
         $counter.innerHTML = `
-        <div class="number_count_container">
+        <div class="number_count_input_container">
           <button class="minBtn"><img src="/src/assets/minus-icon-bg-white.svg" alt="minusCount" /></button>
           <input class="numberCount" type="number" value="1" min="1" max=${apiData?.stockCount} />
           <button class="plusBtn"><img src="/src/assets/plus-icon-bg-white.svg" alt="plusCount" /></button>
         </div>`;
       };
 
+      // 옵션 없는 총 상품 금액 표시 컴포넌트
+      this.noOptionTotalCount = () => {
+        document.querySelector(".total_price_container").innerHTML = `
+        <h1>총 상품 금액</h1>
+        <div class="total_price_info">
+          <span class="count_text">총 수량 <span class="count_number">${this.countState.value}</span>개</span>
+          <span class="total_price_count">${(this.countState.value * apiData.price).toLocaleString("ko-KR")}</span>원
+        </div>
+        `;
+      };
+
       // option Count 컴포넌트
       this.OptionCount = () => {
-        document.querySelector(".count_container").appendChild($option__container);
+        document.querySelector(".count_input_container").appendChild($option__container);
         $option__container.innerHTML = `<div class="select-box">HHHH</div>`;
       };
 
@@ -247,6 +264,7 @@ function ItemDetail({ $target, id, listRender }) {
         if (e.target.value > lengths) {
           e.target.value = lengths;
         }
+        this.setcountState({ value: e.target.value });
       });
       $minBtn.addEventListener("click", (e) => {
         // - 버튼 클릭 시 input value -1씩 감소
@@ -254,6 +272,7 @@ function ItemDetail({ $target, id, listRender }) {
         value--;
         if (value > 0) {
           $numberCount.value = value;
+          this.setcountState({ value: value });
         }
       });
       $plusBtn.addEventListener("click", (e) => {
@@ -263,6 +282,7 @@ function ItemDetail({ $target, id, listRender }) {
           value++;
         }
         $numberCount.value = value;
+        this.setcountState({ value: value });
       });
     }
   };
