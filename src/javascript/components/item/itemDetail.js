@@ -3,7 +3,10 @@ import { getItem, setItem, removeItem } from "../../lib/storage.js";
 function ItemDetail({ $target, id, listRender }) {
   this.state = { apiAddr: null, apiData: null };
   this.likeState = { liked: Boolean(getItem(id, "")) };
-  this.countState = { value: 1 };
+  this.countState = {
+    value: 1,
+    totalvalue: 0,
+  };
   //상태를 변경 하는 메서드
   this.setState = (nextState) => {
     this.state = nextState;
@@ -20,6 +23,7 @@ function ItemDetail({ $target, id, listRender }) {
     const apiAddr = (await api()).API_ADDR;
     const apiData = await (await api()).fetchProduct(id);
     this.setState({ ...this.state, apiAddr, apiData });
+    this.setcountState({ ...this.countState, totalvalue: apiData.price });
   };
   this.setcountState = (nextState) => {
     this.countState = nextState;
@@ -133,6 +137,7 @@ function ItemDetail({ $target, id, listRender }) {
             </div>
         `;
             this.OptionCount();
+            this.noOptionTotalCount();
           }
 
           this.likedButton(); // 좋아요 버튼 요소 컴포넌트 호출
@@ -167,13 +172,15 @@ function ItemDetail({ $target, id, listRender }) {
 
       // 옵션 없는 총 상품 금액 표시 컴포넌트
       this.noOptionTotalCount = () => {
-        document.querySelector(".total_price_container").innerHTML = `
-        <h1>총 상품 금액</h1>
-        <div class="total_price_info">
+        if (document.querySelector(".numberCount")) {
+          document.querySelector(".total_price_container").innerHTML = `
+          <h1>총 상품 금액</h1>
+          <div class="total_price_info">
           <span class="count_text">총 수량 <span class="count_number">${this.countState.value}</span>개</span>
-          <span class="total_price_count">${(this.countState.value * apiData.price).toLocaleString("ko-KR")}</span>원
-        </div>
-        `;
+          <span class="total_price_count">${this.countState.totalvalue.toLocaleString("ko-KR")}</span>원
+          </div>
+          `;
+        }
       };
 
       // option Count 컴포넌트
@@ -245,45 +252,47 @@ function ItemDetail({ $target, id, listRender }) {
       const $minBtn = document.querySelector(".minBtn");
       const $plusBtn = document.querySelector(".plusBtn");
       const $numberCount = document.querySelector(".numberCount");
-      $numberCount.onkeydown = (e) => {
-        // 숫자, 백스페이스, 위아래 화살표 키 설정하기 (양수만 입력 가능)
-        if (
-          !(
-            (e.keyCode > 95 && e.keyCode < 106) ||
-            (e.keyCode > 47 && e.keyCode < 58) ||
-            e.keyCode == 8 ||
-            e.keyCode == 38 ||
-            e.keyCode == 40
-          )
-        ) {
-          return false;
-        }
-      };
-      $numberCount.addEventListener("input", (e) => {
-        const lengths = apiData?.stockCount;
-        if (e.target.value > lengths) {
-          e.target.value = lengths;
-        }
-        this.setcountState({ value: e.target.value });
-      });
-      $minBtn.addEventListener("click", (e) => {
-        // - 버튼 클릭 시 input value -1씩 감소
-        let value = $numberCount.value;
-        value--;
-        if (value > 0) {
+      if ($numberCount) {
+        $numberCount.onkeydown = (e) => {
+          // 숫자, 백스페이스, 위아래 화살표 키 설정하기 (양수만 입력 가능)
+          if (
+            !(
+              (e.keyCode > 95 && e.keyCode < 106) ||
+              (e.keyCode > 47 && e.keyCode < 58) ||
+              e.keyCode == 8 ||
+              e.keyCode == 38 ||
+              e.keyCode == 40
+            )
+          ) {
+            return false;
+          }
+        };
+        $numberCount.addEventListener("input", (e) => {
+          const lengths = apiData?.stockCount;
+          if (e.target.value > lengths) {
+            e.target.value = lengths;
+          }
+          this.setcountState({ value: e.target.value, totalvalue: e.target.value * apiData.price });
+        });
+        $minBtn.addEventListener("click", (e) => {
+          // - 버튼 클릭 시 input value -1씩 감소
+          let value = $numberCount.value;
+          value--;
+          if (value > 0) {
+            $numberCount.value = value;
+            this.setcountState({ value: value, totalvalue: value * apiData.price });
+          }
+        });
+        $plusBtn.addEventListener("click", (e) => {
+          // + 버튼 클릭 시 input value +1씩 증가
+          let value = $numberCount.value;
+          if (value < apiData?.stockCount) {
+            value++;
+          }
           $numberCount.value = value;
-          this.setcountState({ value: value });
-        }
-      });
-      $plusBtn.addEventListener("click", (e) => {
-        // + 버튼 클릭 시 input value +1씩 증가
-        let value = $numberCount.value;
-        if (value < apiData?.stockCount) {
-          value++;
-        }
-        $numberCount.value = value;
-        this.setcountState({ value: value });
-      });
+          this.setcountState({ value: value, totalvalue: value * apiData.price });
+        });
+      }
     }
   };
   // 반복으로 이벤트를 발생 시킬때 this.render내에 addEventListener가 있으면 느려져서 최상단에 위치 시킴
