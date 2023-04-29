@@ -80,6 +80,78 @@
   position: relative;
 }
 
+.select-box .toggle-btn {
+  font-size: 14px;
+  color: var(--secondary-text-color);
+  width: 440px;
+  height: 40px;
+  text-align: left;
+  background: #ffffff;
+  border: 1px solid #c4c4c4;
+  font-size: 14px;
+  font-weight: 400;
+  box-sizing: border-box;
+  border-radius: 5px;
+  padding: 11px 15px 11px 14px;
+  background: url(../../assets/icon-Triangle-down.svg) no-repeat;
+  background-position: 414px 50%;
+}
+
+.select-box .toggle-btn.on {
+  background: url(../../assets/icon-Triangle-up.svg) no-repeat;
+  background-position: 414px 50%;
+}
+
+.select-box-option {
+  box-sizing: border-box;
+  width: 440px;
+  background: #ffffff;
+  position: absolute;
+  top: 46px;
+  border: 1px solid var(--secondary-line-color);
+  box-shadow: 4px 4px 14px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  padding: 4px 8px;
+  display: none;
+}
+
+.select-box-option.on {
+  display: block;
+}
+
+.select-box-option li {
+  width: 100%;
+  margin-top: 10px;
+}
+.select-box-option li:first-child {
+  margin-top: 3px;
+}
+
+.select-box-option li:last-child {
+  margin-bottom: 5px;
+}
+
+.select-box-option .option-btn {
+  width: inherit;
+  box-sizing: border-box;
+  border: none;
+  background-color: transparent;
+  padding: 7px 10px;
+  text-align: left;
+  color: var(--primary-text-color);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16px;
+  display: inline-block;
+}
+
+.select-box-option li:hover,
+.select-box-option li:focus,
+.select-box-option li:active {
+  background-color: var(--primary-bg-color);
+  border-radius: 5px;
+}
+
 /* 총 가격 컨테이너 */
 .buy_input .total_price_container {
   display: flex;

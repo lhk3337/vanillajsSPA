@@ -129,6 +129,7 @@ function ItemDetail({ $target, id, listRender }) {
           } else {
             $buyInput.innerHTML = `
             <div class="count_input_container"></div>
+            <div class="total_price_container"></div>
             <div class="product_stock_btns">
               <button class="submit_btn">바로 구매</button>
               <button class="addCart_btn">
@@ -186,7 +187,32 @@ function ItemDetail({ $target, id, listRender }) {
       // option Count 컴포넌트
       this.OptionCount = () => {
         document.querySelector(".count_input_container").appendChild($option__container);
-        $option__container.innerHTML = `<div class="select-box">HHHH</div>`;
+        $option__container.innerHTML = `
+        <div class="select-box">
+          <button class="toggle-btn">옵션을 선택하세요</button>
+          <ul class="select-box-option">
+            ${apiData.option
+              .map((v) => {
+                if (v.additionalFee > 0) {
+                  return `<li><button class="option-btn">${v.optionName}(+${v.additionalFee}원)</button></li>`;
+                } else {
+                  return `<li><button class="option-btn">${v.optionName}</button></li>`;
+                }
+              })
+              .join("")}
+          </ul>
+        </div>
+        `;
+        this.optionTotalCount();
+      };
+      this.optionTotalCount = () => {
+        document.querySelector(".total_price_container").innerHTML = `
+          <h1>총 상품 금액</h1>
+          <div class="total_price_info">
+          <span class="count_text">총 수량 <span class="count_number">${this.countState.value}</span>개</span>
+          <span class="total_price_count">${this.countState.totalvalue.toLocaleString("ko-KR")}</span>원
+          </div>
+          `;
       };
 
       // 좋아요 버튼 컴포넌트
@@ -293,6 +319,21 @@ function ItemDetail({ $target, id, listRender }) {
           this.setcountState({ value: value, totalvalue: value * apiData.price });
         });
       }
+
+      // option button 클릭 이벤트
+      const $optionToggleBtn = document.querySelector(".toggle-btn");
+      const $selectBoxOption = document.querySelector(".select-box-option");
+
+      $optionToggleBtn.addEventListener("click", () => {
+        $selectBoxOption.classList.toggle("on");
+        $optionToggleBtn.classList.toggle("on");
+      });
+      $selectBoxOption.addEventListener("click", (e) => {
+        if (e.target.nodeName === "BUTTON") {
+          $selectBoxOption.classList.remove("on");
+          $optionToggleBtn.classList.remove("on");
+        }
+      });
     }
   };
   // 반복으로 이벤트를 발생 시킬때 this.render내에 addEventListener가 있으면 느려져서 최상단에 위치 시킴
