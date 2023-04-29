@@ -1,0 +1,41 @@
+.product_buy .buy_info .buy_name {
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 30px;
+}
+
+.buy_info .buy_value {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+.buy_info .shipping_info {
+  margin-top: 99px;
+  margin-bottom: 10px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--secondary-text-color);
+}
+.buy_value .price {
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 30.5px;
+}
+.buy_value .origin_price {
+  color: var(--secondary-text-color);
+  font-size: px;
+  font-weight: 400;
+  margin: 0px 10px;
+  line-height: 20.03px;
+  text-decoration: line-through;
+}
+
+.buy_value .discount {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--secondary-color);
+  line-height: 20.03px;
+}

@@ -1,0 +1,211 @@
+.buy_input .product_nostock_btns {
+  margin-top: 270px;
+  display: flex;
+  gap: 6px;
+}
+
+/* 수량 증가 감소 컨테이너 */
+.buy_input .count_input_container {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+  border-top: 2px solid var(--primary-line-color);
+  border-bottom: 2px solid var(--primary-line-color);
+}
+/* input number */
+.count_input_container .number_count_input_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 122px;
+  height: 40px;
+  padding: 0px 11px;
+  border: 1px solid var(--primary-border-color);
+  border-radius: 5px;
+
+  box-sizing: border-box;
+}
+/* - 버튼 */
+.minBtn {
+  width: 20px;
+  height: 20px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+.minBtn img {
+  width: 100%;
+  height: 100%;
+}
+
+/* + 버튼 */
+.plusBtn {
+  width: 20px;
+  height: 20px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.plusBtn img {
+  width: 100%;
+  height: 100%;
+}
+
+/* number input */
+.numberCount {
+  outline: none;
+  border: none;
+  -moz-appearance: textfield;
+  width: 38px;
+  height: 95%;
+  border: 1px solid var(--primary-border-color);
+  text-align: center;
+}
+.numberCount::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+.numberCount::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+/* select tag */
+
+.option__container .select-box {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* 총 가격 컨테이너 */
+.buy_input .total_price_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 16px 0px;
+}
+/* 총 상품 구매 텍스트 */
+.total_price_container h1 {
+  color: var(--primary-text-color);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 23px;
+}
+/* 수량 및 총 금액 */
+.total_price_container .total_price_info {
+  display: flex;
+  align-items: center;
+  color: var(--thirds-color);
+}
+/* 수량 숫자 */
+.total_price_info .count_text {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 23px;
+  color: var(--secondary-text-color);
+  padding-right: 12px;
+  border-right: 2px solid var(--secondary-line-color);
+}
+.count_number {
+  color: var(--thirds-color);
+  font-weight: 700;
+}
+
+.total_price_info .total_price_count {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 36px;
+  color: var(--thirds-color);
+  margin-left: 12px;
+}
+
+/* 버튼 컨테이너 */
+.product_stock_btns {
+  display: flex;
+  gap: 6px;
+}
+
+/*  바로구매 버튼 */
+.product_nostock_btns .submit_btn {
+  width: 308px;
+  height: 60px;
+  background-color: var(--primary-border-color);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 22px;
+  color: white;
+  cursor: inherit;
+}
+
+.product_stock_btns .submit_btn {
+  width: 308px;
+  height: 60px;
+  background-color: var(--secondary-color);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 22px;
+  color: white;
+  cursor: pointer;
+}
+
+/* 카트 버튼 */
+.product_nostock_btns .addCart_btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 5px;
+  background-color: var(--primary-border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: inherit;
+}
+
+.product_stock_btns .addCart_btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 5px;
+  border: 1px solid var(--primary-border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.addCart_btn img {
+  width: 22px;
+  height: 22px;
+}
+
+/* 좋아요 버튼 */
+.product_nostock_btns .modal_heart_btn {
+  width: 60px;
+  height: 60px;
+  border: 1px solid var(--primary-border-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+}
+
+.product_stock_btns .modal_heart_btn {
+  width: 60px;
+  height: 60px;
+  border: 1px solid var(--primary-border-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+}
+
+.modal_heart_btn .modal_heart_btn_on.modal_heart_btn_cancel {
+  width: 22px;
+  height: 22px;
+}

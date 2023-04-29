@@ -1,12 +1,15 @@
 @import "reset.css";
 @import "item.css";
-@import "modal.css";
+@import "./modal/main.css";
 @import "cart.css";
 
 :root {
   --primary-color: #f2f2f2;
   --secondary-color: #6327fe;
   --thirds-color: #eb5757;
+
+  --primary-bg-color: #f8f5ff;
+  --secondary-bg-color: #f3f0fb;
 
   --primary-text-color: #333333;
   --secondary-text-color: #828282;
