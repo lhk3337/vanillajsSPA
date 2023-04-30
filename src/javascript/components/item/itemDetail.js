@@ -27,7 +27,11 @@ function ItemDetail({ $target, id, listRender }) {
   };
   this.setcountState = (nextState) => {
     this.countState = nextState;
-    this.noOptionTotalCount();
+    if (this.noOptionTotalCount()) {
+      this.noOptionTotalCount();
+    } else {
+      this.optionTotalCount();
+    }
   };
 
   this.data();
@@ -138,7 +142,7 @@ function ItemDetail({ $target, id, listRender }) {
             </div>
         `;
             this.OptionCount();
-            this.noOptionTotalCount();
+            this.optionTotalCount();
           }
 
           this.likedButton(); // 좋아요 버튼 요소 컴포넌트 호출
@@ -194,16 +198,20 @@ function ItemDetail({ $target, id, listRender }) {
             ${apiData.option
               .map((v) => {
                 if (v.additionalFee > 0) {
-                  return `<li><button class="option-btn">${v.optionName}(+${v.additionalFee}원)</button></li>`;
+                  return `<li><button class="option-btn" data-option-id=${v.id}>${v.optionName}(+${v.additionalFee}원)</button></li>`;
                 } else {
-                  return `<li><button class="option-btn">${v.optionName}</button></li>`;
+                  return `<li><button class="option-btn" data-option-id=${v.id}>${v.optionName}</button></li>`;
                 }
               })
               .join("")}
           </ul>
+          <div class="number_count_input_container">
+            <button class="minBtn"><img src="/src/assets/minus-icon-bg-white.svg" alt="minusCount" /></button>
+            <input class="numberCount" type="number" value="1" min="1" max=${apiData?.stockCount} />
+            <button class="plusBtn"><img src="/src/assets/plus-icon-bg-white.svg" alt="plusCount" /></button>
+          </div>
         </div>
         `;
-        this.optionTotalCount();
       };
       this.optionTotalCount = () => {
         document.querySelector(".total_price_container").innerHTML = `
@@ -323,17 +331,32 @@ function ItemDetail({ $target, id, listRender }) {
       // option button 클릭 이벤트
       const $optionToggleBtn = document.querySelector(".toggle-btn");
       const $selectBoxOption = document.querySelector(".select-box-option");
+      if ($optionToggleBtn && $selectBoxOption) {
+        $optionToggleBtn.addEventListener("click", () => {
+          $selectBoxOption.classList.toggle("on");
+          $optionToggleBtn.classList.toggle("on");
+        });
+        $selectBoxOption.addEventListener("click", (e) => {
+          if (e.target.nodeName === "BUTTON") {
+            $selectBoxOption.classList.remove("on");
+            $optionToggleBtn.classList.remove("on");
+          }
+        });
+      }
 
-      $optionToggleBtn.addEventListener("click", () => {
-        $selectBoxOption.classList.toggle("on");
-        $optionToggleBtn.classList.toggle("on");
-      });
-      $selectBoxOption.addEventListener("click", (e) => {
-        if (e.target.nodeName === "BUTTON") {
-          $selectBoxOption.classList.remove("on");
-          $optionToggleBtn.classList.remove("on");
-        }
-      });
+      // 옵션 버튼을 누른 후 옵션 박스 클릭 시, 수량 및 가겨 표시 박스 표시하기
+
+      const $optionSelectBtn = document.querySelectorAll(".option-btn");
+      if ($optionSelectBtn) {
+        $optionSelectBtn.forEach((element) => {
+          const {
+            dataset: { optionId },
+          } = element;
+          element.addEventListener("click", () => {
+            console.log(optionId);
+          });
+        });
+      }
     }
   };
   // 반복으로 이벤트를 발생 시킬때 this.render내에 addEventListener가 있으면 느려져서 최상단에 위치 시킴
