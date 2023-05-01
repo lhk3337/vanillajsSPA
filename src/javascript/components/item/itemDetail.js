@@ -6,7 +6,9 @@ function ItemDetail({ $target, id, listRender }) {
   this.countState = {
     value: 1,
     totalvalue: 0,
+    optionValue: [],
   };
+
   //상태를 변경 하는 메서드
   this.setState = (nextState) => {
     this.state = nextState;
@@ -353,7 +355,15 @@ function ItemDetail({ $target, id, listRender }) {
             dataset: { optionId },
           } = element;
           element.addEventListener("click", () => {
-            console.log(optionId);
+            const optionClickItem = apiData.option.find((v) => v.id === +optionId);
+            const selectedItem = this.countState.optionValue.find((v) => v.id === +optionId);
+
+            if (optionClickItem && !selectedItem) {
+              this.setcountState({
+                ...this.countState,
+                optionValue: [...this.countState.optionValue, apiData.option.find((v) => v.id === +optionId)],
+              });
+            }
           });
         });
       }
