@@ -200,19 +200,19 @@ function ItemDetail({ $target, id, listRender }) {
           document.querySelector(".option_input_container").appendChild($option__container);
           $option__container.innerHTML = `
           <div class="select-box">
-          <button class="toggle-btn">옵션을 선택하세요</button>
-          <ul class="select-box-option">
-          ${apiData.option
-            .map((v) => {
-              if (v.additionalFee > 0) {
-                return `<li><button class="option-btn" data-option-id=${v.id}>${v.optionName}(+${v.additionalFee}원)</button></li>`;
-              } else {
-                return `<li><button class="option-btn" data-option-id=${v.id}>${v.optionName}</button></li>`;
-              }
-            })
-            .join("")}
+            <button class="toggle-btn">옵션을 선택하세요</button>
+            <ul class="select-box-option">
+            ${apiData.option
+              .map((v) => {
+                if (v.additionalFee > 0) {
+                  return `<li><button class="option-btn" data-option-id=${v.id}>${v.optionName}(+${v.additionalFee}원)</button></li>`;
+                } else {
+                  return `<li><button class="option-btn" data-option-id=${v.id}>${v.optionName}</button></li>`;
+                }
+              })
+              .join("")}
             </ul>
-            </div>
+          </div>
             `;
         }
       };
@@ -235,10 +235,10 @@ function ItemDetail({ $target, id, listRender }) {
                   <img src="/src/assets/icon-delete.svg" alt="closeOptionButton" /> 
                 </button>
                 <div class="option_info">
-                  <div class="number_count_input_container">
-                    <button class="minBtn"><img src="/src/assets/minus-icon-bg-white.svg" alt="minusCount" /></button>
-                    <input class="numberCount" type="number" value="1" min="1" max=${apiData?.stockCount} />
-                    <button class="plusBtn"><img src="/src/assets/plus-icon-bg-white.svg" alt="plusCount" /></button>
+                  <div class="option_count_input_container">
+                    <button class="option_minBtn"><img src="/src/assets/minus-icon-bg-white.svg" alt="minusCount" /></button>
+                    <input class="option_numberCount" type="number" value="1" min="1" max=${apiData?.stockCount} />
+                    <button class="option_plusBtn"><img src="/src/assets/plus-icon-bg-white.svg" alt="plusCount" /></button>
                   </div>
                   <span>${v.price.toLocaleString("ko-KR")}원</span>
                 </div>

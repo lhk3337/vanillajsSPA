@@ -33,18 +33,6 @@
   box-sizing: border-box;
 }
 
-..option_input_container .number_count_input_container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 122px;
-  height: 40px;
-  padding: 0px 11px;
-  border: 1px solid var(--primary-border-color);
-  border-radius: 5px;
-  box-sizing: border-box;
-}
-
 .selected-option .selected_option .number_count_input_container {
   display: flex;
   justify-content: space-between;
@@ -216,6 +204,68 @@
   height: 40px;
   justify-content: space-between;
 }
+
+.option_info .option_count_input_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 122px;
+  height: 40px;
+  padding: 0px 11px;
+  border: 1px solid var(--primary-border-color);
+  border-radius: 5px;
+  background-color: white;
+  box-sizing: border-box;
+  background-color: white;
+}
+
+/* - 버튼 */
+.option_minBtn {
+  width: 20px;
+  height: 20px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+.option_minBtn img {
+  width: 100%;
+  height: 100%;
+}
+
+/* + 버튼 */
+.option_plusBtn {
+  width: 20px;
+  height: 20px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.option_plusBtn img {
+  width: 100%;
+  height: 100%;
+}
+
+/* number input */
+.option_numberCount {
+  outline: none;
+  border: none;
+  -moz-appearance: textfield;
+  width: 38px;
+  height: 95%;
+  border: 1px solid var(--primary-border-color);
+  text-align: center;
+}
+.option_numberCount::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+.option_numberCount::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
 .option_info span {
   font-size: 24px;
   font-weight: 700;
