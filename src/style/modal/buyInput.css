@@ -271,21 +271,21 @@
   font-weight: 700;
 }
 /* 총 가격 컨테이너 */
-.buy_input .total_price_container {
+.buy_input .price_container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin: 16px 0px;
 }
 /* 총 상품 구매 텍스트 */
-.total_price_container h1 {
+.price_container h1 {
   color: var(--primary-text-color);
   font-weight: 400;
   font-size: 18px;
   line-height: 23px;
 }
 /* 수량 및 총 금액 */
-.total_price_container .total_price_info {
+.price_container .total_price_info {
   display: flex;
   align-items: center;
   color: var(--thirds-color);

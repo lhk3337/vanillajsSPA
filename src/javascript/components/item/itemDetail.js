@@ -127,7 +127,7 @@ function ItemDetail({ $target, id, listRender }) {
           if (Array.isArray(apiData.option) && apiData.option.length === 0) {
             $buyInput.innerHTML = `
             <div class="count_input_container"></div>
-            <div class="total_price_container"></div>
+            <div class="total_price_container price_container"></div>
             <div class="product_stock_btns">
               <button class="submit_btn">바로 구매</button>
               <button class="addCart_btn">
@@ -140,7 +140,7 @@ function ItemDetail({ $target, id, listRender }) {
           } else {
             $buyInput.innerHTML = `
             <div class="option_input_container"></div>
-            <div class="total_price_container"></div>
+            <div class="option_total_price_container price_container"></div>
             <div class="product_stock_btns">
               <button class="submit_btn">바로 구매</button>
               <button class="addCart_btn">
@@ -185,13 +185,15 @@ function ItemDetail({ $target, id, listRender }) {
 
       // 옵션 없는 총 상품 금액 표시 컴포넌트
       this.noOptionTotalCount = () => {
-        document.querySelector(".total_price_container").innerHTML = `
+        if (document.querySelector(".total_price_container")) {
+          document.querySelector(".total_price_container").innerHTML = `
           <h1>총 상품 금액</h1>
           <div class="total_price_info">
           <span class="count_text">총 수량 <span class="count_number">${this.noOptionState.countValue}</span>개</span>
           <span class="total_price_count">${this.noOptionState.totalvalue.toLocaleString("ko-KR")}</span>원
           </div>
           `;
+        }
       };
 
       // option Count 컴포넌트
@@ -227,24 +229,28 @@ function ItemDetail({ $target, id, listRender }) {
           if (this.optionState.optionValue) {
             $selectedContainer.innerHTML = `
           ${this.optionState.optionValue
-            .map((v) => {
-              return `
+            .map(
+              (v) => `
               <div class="selected_option">
                 <h1>${v.optionName}</h1>
                 <button class="closeOption" data-selected-id="${v.id}">
                   <img src="/src/assets/icon-delete.svg" alt="closeOptionButton" /> 
                 </button>
                 <div class="option_info">
-                  <div class="option_count_input_container">
-                    <button class="option_minBtn"><img src="/src/assets/minus-icon-bg-white.svg" alt="minusCount" /></button>
+                  <div class="option_count_input_container" data-option-id="${v.id}">
+                    <button class="option_minBtn">
+                      <img id="minBtn_img" src="/src/assets/minus-icon-bg-white.svg" alt="minusCount" />
+                    </button>
                     <input class="option_numberCount" type="number" value="1" min="1" max=${apiData?.stockCount} />
-                    <button class="option_plusBtn"><img src="/src/assets/plus-icon-bg-white.svg" alt="plusCount" /></button>
+                    <button class="option_plusBtn">
+                      <img id="plusBtn_img" src="/src/assets/plus-icon-bg-white.svg" alt="plusCount" />
+                    </button>
                   </div>
                   <span>${v.price.toLocaleString("ko-KR")}원</span>
                 </div>
               </div>
-            `;
-            })
+            `
+            )
             .join("")}
         `;
           }
@@ -252,12 +258,14 @@ function ItemDetail({ $target, id, listRender }) {
       };
 
       this.optionTotalCount = () => {
-        if (document.querySelector(".numberCount")) {
-          document.querySelector(".total_price_container").innerHTML = `
+        if (document.querySelector(".option_total_price_container")) {
+          document.querySelector(".option_total_price_container").innerHTML = `
           <h1>총 상품 금액</h1>
           <div class="total_price_info">
-          <span class="count_text">총 수량 <span class="count_number">${this.noOptionState.countValue}</span>개</span>
-          <span class="total_price_count">${this.noOptionState.totalvalue.toLocaleString("ko-KR")}</span>원
+          <span class="count_text">총 수량 <span class="count_number">${
+            this.optionState.optionValue.length
+          }</span>개</span>
+          <span class="total_price_count">${this.optionState.optionValue.reduce((a, b) => a + b.price, 0)}</span>원
           </div>
           `;
         }
@@ -440,9 +448,12 @@ function ItemDetail({ $target, id, listRender }) {
       });
       const $submitBtn = document.querySelector(".submit_btn");
       $submitBtn.addEventListener("click", () => {
-        console.log(this.noOptionState);
         const cartData = getItem("product_carts", []);
-
+        if (apiData.option.length > 0) {
+          console.log(this.optionState);
+        } else {
+          console.log(this.noOptionState);
+        }
         setItem("product_carts", cartData.concat(apiData.option.length > 0 ? this.optionState : this.noOptionState));
       });
     }
