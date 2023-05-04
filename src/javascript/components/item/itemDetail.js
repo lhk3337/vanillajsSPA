@@ -231,22 +231,24 @@ function ItemDetail({ $target, id, listRender }) {
           ${this.optionState.optionValue
             .map(
               (v) => `
-              <div class="selected_option">
+              <div class="selected_option" data-option-id="${v.id}">
                 <h1>${v.optionName}</h1>
                 <button class="closeOption" data-selected-id="${v.id}">
                   <img src="/src/assets/icon-delete.svg" alt="closeOptionButton" /> 
                 </button>
                 <div class="option_info">
-                  <div class="option_count_input_container" data-option-id="${v.id}">
+                  <div class="option_count_input_container">
                     <button class="option_minBtn">
                       <img id="minBtn_img" src="/src/assets/minus-icon-bg-white.svg" alt="minusCount" />
                     </button>
-                    <input class="option_numberCount" type="number" value="1" min="1" max=${apiData?.stockCount} />
+                    <input class="option_numberCount" type="number" value=${v.countValue} min="1" max=${
+                apiData?.stockCount
+              } />
                     <button class="option_plusBtn">
                       <img id="plusBtn_img" src="/src/assets/plus-icon-bg-white.svg" alt="plusCount" />
                     </button>
                   </div>
-                  <span>${v.price.toLocaleString("ko-KR")}원</span>
+                  <span>${(v.price * v.countValue).toLocaleString("ko-KR")}원</span>
                 </div>
               </div>
             `
@@ -423,6 +425,7 @@ function ItemDetail({ $target, id, listRender }) {
                     optionName,
                     additionalFee,
                     price: apiData.price + additionalFee,
+                    countValue: 1,
                   },
                 ],
               });
@@ -430,6 +433,92 @@ function ItemDetail({ $target, id, listRender }) {
           });
         });
       }
+      $selectedContainer.addEventListener("click", (event) => {
+        const $options = event.target.closest(".selected_option");
+        const optionClickItem = apiData.option.find((v) => v.id === +$options.dataset.optionId);
+
+        if ($options) {
+          if (event.target.closest(".option_minBtn")) {
+            const input = $options.querySelector(".option_numberCount");
+            let value = input.value;
+            value--;
+            if (value > 0) {
+              input.value = value;
+              this.optionState.optionValue.map((v) => {
+                if (v.id === +$options.dataset.optionId) {
+                  v.countValue = value;
+                }
+                this.OptionCount();
+              });
+            }
+          } else if (event.target.closest(".option_plusBtn")) {
+            const input = $options.querySelector(".option_numberCount");
+            const maxValue = parseInt(input.getAttribute("max"));
+            let value = input.value;
+            if (value < maxValue) {
+              value++;
+            }
+            input.value = value;
+            this.optionState.optionValue.map((v) => {
+              if (v.id === +$options.dataset.optionId) {
+                v.countValue = value;
+              }
+              this.OptionCount();
+            });
+          }
+        }
+        // $options.forEach((v) => {
+        //   v.addEventListener("click", (e) => {
+        //     if (e.target.closest(".option_count_input_container")) {
+        //       console.log("wefaewfaw");
+        //     }
+        //     // const id = v.querySelector(".option_count_input_container").dataset;
+
+        //     // if (e.target.className === "option_plusBtn" || e.target.id === "plusBtn_img") {
+        //     //   console.log(id);
+        //     // }
+        //   });
+        // });
+      });
+
+      // $selectedContainer.addEventListener("click", (event) => {
+      //   // const optionClickItem = apiData.option.find((v) => v.id === +optionId);
+      //   // console.log(optionClickItem);
+
+      // if (event.target.closest(".option_minBtn")) {
+      //   this.optionState.optionValue.map((value) => {
+      //     if (value.id) {
+      //       const input = event.target.closest(".selected_container").querySelector(".option_numberCount");
+      //       let value = input.value;
+
+      //       value--;
+      //       if (value > 0) {
+      //         const { id, optionName, additionalFee } = optionClickItem;
+      //         input.value = value;
+      //         this.setOptionState({
+      //           ...this.optionState,
+      //           optionValue: [
+      //             {
+      //               id,
+      //               optionName,
+      //               additionalFee,
+      //               countValue: value,
+      //             },
+      //           ],
+      //         });
+      //       }
+      //     }
+      //   });
+      // } else if (event.target.closest(".option_plusBtn")) {
+      //   const input = event.target.closest(".selected_container").querySelector(".option_numberCount");
+      //   const maxValue = parseInt(input.getAttribute("max"));
+      //   let value = input.value;
+      //   if (value < maxValue) {
+      //     value++;
+      //   }
+      //   input.value = value;
+      // }
+      // });
 
       // 동적으로 생성된 요소에 이벤트 설정하기, 해당 옵션 박스의 X버튼 클릭 시 옵션 박스 삭제
       $selectedContainer.addEventListener("click", (event) => {
