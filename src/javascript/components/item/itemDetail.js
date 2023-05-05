@@ -266,10 +266,11 @@ function ItemDetail({ $target, id, listRender }) {
           document.querySelector(".option_total_price_container").innerHTML = `
           <h1>총 상품 금액</h1>
           <div class="total_price_info">
-          <span class="count_text">총 수량 <span class="count_number">${
-            this.optionState.optionValue.length
-          }</span>개</span>
-          <span class="total_price_count">${this.optionState.optionValue.reduce((a, b) => a + b.price, 0)}</span>원
+          <span class="count_text">총 수량 <span class="count_number">${this.optionState.optionValue.reduce(
+            (a, b) => a + b.countValue,
+            0
+          )}</span>개</span>
+          <span class="total_price_count">${this.optionState.optionValue.reduce((a, b) => a + b.totalPrice, 0)}</span>원
           </div>
           `;
         }
@@ -436,6 +437,10 @@ function ItemDetail({ $target, id, listRender }) {
                       ? Math.floor(apiData?.price * ((100 - apiData?.discountRate) / 100)) + additionalFee
                       : apiData.price + additionalFee,
                     countValue: 1,
+                    // TODO totalPrice price로 초기화
+                    totalPrice: apiData.discountRate
+                      ? Math.floor(apiData?.price * ((100 - apiData?.discountRate) / 100)) + additionalFee
+                      : apiData.price + additionalFee,
                   },
                 ],
               });
@@ -457,8 +462,10 @@ function ItemDetail({ $target, id, listRender }) {
               this.optionState.optionValue.map((v) => {
                 if (v.id === +$options.dataset.optionId) {
                   v.countValue = value;
+                  v.totalPrice = v.price * v.countValue;
                 }
                 this.OptionCount();
+                this.optionTotalCount();
               });
             }
           } else if (event.target.closest(".option_plusBtn")) {
@@ -472,8 +479,10 @@ function ItemDetail({ $target, id, listRender }) {
             this.optionState.optionValue.map((v) => {
               if (v.id === +$options.dataset.optionId) {
                 v.countValue = value;
+                v.totalPrice = v.price * v.countValue;
               }
               this.OptionCount();
+              this.optionTotalCount();
             });
           }
         }
@@ -495,12 +504,15 @@ function ItemDetail({ $target, id, listRender }) {
             this.optionState.optionValue.map((v) => {
               if (v.id === +$options.dataset.optionId) {
                 v.countValue = parseInt(input.value);
+                v.totalPrice = v.price * v.countValue;
                 // TODO : optionValue의 데이터를 변경하면 option_price 요소만 업데이트
+
                 document.querySelectorAll(".option_price").forEach((value) => {
                   if (parseInt(value.dataset.optionpriceId) === v.id) {
                     value.innerText = `${(v.price * v.countValue).toLocaleString("ko-KR")}원`;
                   }
                 });
+                this.optionTotalCount();
               }
             });
           }
