@@ -315,15 +315,16 @@ function ItemDetail({ $target, id, listRender }) {
       };
       this.RenderProductDesc();
 
-      // event 처리 부분
+      // ! 이벤트 처리 부분
+      // * 모달창에서 X버튼 클릭시 모달창 끄는 이벤트
       const $closeBtn = document.querySelector(".closeBtn");
       $closeBtn.addEventListener("click", () => {
         $modal.remove();
         listRender();
         document.body.style.overflow = "";
       });
-      // 모달창에서 X버튼 클릭시 모달창 끄는 이벤트
 
+      // * 모달창에서 모달창 의외에 클릭할때 모달창 끄는 이벤트
       $modal.addEventListener("click", (e) => {
         const evTarget = e.target;
         if (evTarget.classList.contains("item_modal")) {
@@ -332,9 +333,8 @@ function ItemDetail({ $target, id, listRender }) {
           document.body.style.overflow = "";
         }
       });
-      // 모달창에서 모달창 의외에 클릭할때 모달창 끄는 이벤트
 
-      // option이 없는 경우 수량 카운트 input number handler
+      // * option이 없는 경우 수량 카운트 input number handler
       const $number_count_input_container = document.querySelector(".buy_input");
 
       const $numberCount = document.querySelector(".numberCount");
@@ -364,7 +364,7 @@ function ItemDetail({ $target, id, listRender }) {
 
       if ($numberCount) {
         $numberCount.onkeydown = (e) => {
-          // 숫자, 백스페이스, 위아래 화살표 키 설정하기 (양수만 입력 가능)
+          // TODO 숫자, 백스페이스, 위아래 화살표 키 설정하기 (양수만 입력 가능)
           if (
             !(
               (e.keyCode > 95 && e.keyCode < 106) ||
@@ -392,7 +392,7 @@ function ItemDetail({ $target, id, listRender }) {
         });
       }
 
-      // option button 클릭 이벤트
+      // * option button 클릭 이벤트
       const $optionToggleBtn = document.querySelector(".toggle-btn");
       const $selectBoxOption = document.querySelector(".select-box-option");
       if ($optionToggleBtn && $selectBoxOption) {
@@ -408,7 +408,7 @@ function ItemDetail({ $target, id, listRender }) {
         });
       }
 
-      // 옵션 선택 버튼과 해당 옵션 리스트 클릭 시, 수량 및 가격 표시하는 옵션 박스 표시하기
+      // * 옵션 선택 버튼과 해당 옵션 리스트 클릭 시, 수량 및 가격 표시하는 옵션 박스 표시하기
 
       const $optionSelectBtn = document.querySelectorAll(".option-btn");
 
@@ -423,6 +423,7 @@ function ItemDetail({ $target, id, listRender }) {
             const { id, optionName, additionalFee } = optionClickItem;
 
             if (optionClickItem && !selectedItem) {
+              // TODO 옵션 메뉴클릭하면 this.optionState.optionValue에 apiData.option 데이터 업데이트 하도록 설정
               this.setOptionState({
                 ...this.optionState,
                 optionValue: [
@@ -443,7 +444,7 @@ function ItemDetail({ $target, id, listRender }) {
         });
       }
 
-      // 옵션이 있는 수량 카운트 input number handler
+      // * 옵션이 있는 수량 카운트 input number handler
       $selectedContainer.addEventListener("click", (event) => {
         const $options = event.target.closest(".selected_option");
         if ($options) {
@@ -478,7 +479,7 @@ function ItemDetail({ $target, id, listRender }) {
         }
       });
 
-      // 옵션이 있는 input number input 설정하기
+      // * 옵션이 있는 input number input 설정하기
       $selectedContainer.addEventListener("input", (event) => {
         const $options = event.target.closest(".selected_option");
         if ($options) {
@@ -492,6 +493,7 @@ function ItemDetail({ $target, id, listRender }) {
             this.optionState.optionValue.map((v) => {
               if (v.id === +$options.dataset.optionId) {
                 v.countValue = parseInt(input.value);
+                // TODO : optionValue의 데이터를 변경하면 option_price 요소만 업데이트
                 document.querySelectorAll(".option_price").forEach((value) => {
                   if (parseInt(value.dataset.optionpriceId) === v.id) {
                     value.innerText = `${(v.price * v.countValue).toLocaleString("ko-KR")}원`;
@@ -503,9 +505,9 @@ function ItemDetail({ $target, id, listRender }) {
         }
       });
 
-      // 동적으로 생성된 요소에 이벤트 설정하기, 해당 옵션 박스의 X버튼 클릭 시 옵션 박스 삭제
+      // * 동적으로 생성된 요소에 이벤트 설정하기, 해당 옵션 박스의 X버튼 클릭 시 옵션 박스 삭제
       $selectedContainer.addEventListener("click", (event) => {
-        // 정적으로 설정한 부모 요소 설정
+        // TODO : 정적인 요소인 부모 요소를 이벤트에 등록(이벤트 위임)
         const target = event.target;
         const closeOptionButtonElement = target.closest(".closeOption");
         if (closeOptionButtonElement) {
@@ -518,6 +520,7 @@ function ItemDetail({ $target, id, listRender }) {
           });
         }
       });
+
       const $submitBtn = document.querySelector(".submit_btn");
       $submitBtn.addEventListener("click", () => {
         const cartData = getItem("product_carts", []);
@@ -530,19 +533,17 @@ function ItemDetail({ $target, id, listRender }) {
       });
     }
   };
-  // 반복으로 이벤트를 발생 시킬때 this.render내에 addEventListener가 있으면 느려져서 최상단에 위치 시킴
 
+  // ! 반복으로 이벤트를 발생 시킬때 this.render내에 addEventListener가 있으면 느려지는 원인으로 하트 좋아요 이벤트 설정을 최상단에 위치 시킴
   $modal.addEventListener("click", (event) => {
     if (event.target.className === "modal_heart_btn_on") {
       if (this.likeState.liked) {
-        // this.setState({ ...this.state, liked: false });
         this.setLikeState({ liked: false });
         removeItem(id);
         listRender();
       }
     } else if (event.target.className === "modal_heart_btn_cancel") {
       if (!this.likeState.liked) {
-        // this.setState({ ...this.state, liked: true });
         setItem(id, true);
         listRender();
         this.setLikeState({ liked: true });
