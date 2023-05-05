@@ -248,7 +248,9 @@ function ItemDetail({ $target, id, listRender }) {
                       <img id="plusBtn_img" src="/src/assets/plus-icon-bg-white.svg" alt="plusCount" />
                     </button>
                   </div>
-                  <span>${(v.price * v.countValue).toLocaleString("ko-KR")}원</span>
+                  <span class="option_price" data-optionprice-id="${v.id}">${(v.price * v.countValue).toLocaleString(
+                "ko-KR"
+              )}원</span>
                 </div>
               </div>
             `
@@ -381,7 +383,12 @@ function ItemDetail({ $target, id, listRender }) {
           if (e.target.value > lengths) {
             e.target.value = lengths;
           }
-          this.setNoOptionState({ countValue: e.target.value, totalvalue: e.target.value * apiData.price });
+          this.setNoOptionState({
+            countValue: e.target.value,
+            totalvalue: apiData.discountRate
+              ? Math.floor(apiData?.price * ((100 - apiData?.discountRate) / 100)) * e.target.value
+              : e.target.value * apiData.price,
+          });
         });
       }
 
@@ -424,7 +431,9 @@ function ItemDetail({ $target, id, listRender }) {
                     id,
                     optionName,
                     additionalFee,
-                    price: apiData.price + additionalFee,
+                    price: apiData.discountRate
+                      ? Math.floor(apiData?.price * ((100 - apiData?.discountRate) / 100)) + additionalFee
+                      : apiData.price + additionalFee,
                     countValue: 1,
                   },
                 ],
@@ -433,10 +442,10 @@ function ItemDetail({ $target, id, listRender }) {
           });
         });
       }
+
+      // 옵션이 있는 수량 카운트 input number handler
       $selectedContainer.addEventListener("click", (event) => {
         const $options = event.target.closest(".selected_option");
-        const optionClickItem = apiData.option.find((v) => v.id === +$options.dataset.optionId);
-
         if ($options) {
           if (event.target.closest(".option_minBtn")) {
             const input = $options.querySelector(".option_numberCount");
@@ -467,58 +476,32 @@ function ItemDetail({ $target, id, listRender }) {
             });
           }
         }
-        // $options.forEach((v) => {
-        //   v.addEventListener("click", (e) => {
-        //     if (e.target.closest(".option_count_input_container")) {
-        //       console.log("wefaewfaw");
-        //     }
-        //     // const id = v.querySelector(".option_count_input_container").dataset;
-
-        //     // if (e.target.className === "option_plusBtn" || e.target.id === "plusBtn_img") {
-        //     //   console.log(id);
-        //     // }
-        //   });
-        // });
       });
 
-      // $selectedContainer.addEventListener("click", (event) => {
-      //   // const optionClickItem = apiData.option.find((v) => v.id === +optionId);
-      //   // console.log(optionClickItem);
+      // 옵션이 있는 input number input 설정하기
+      $selectedContainer.addEventListener("input", (event) => {
+        const $options = event.target.closest(".selected_option");
+        if ($options) {
+          const input = event.target.closest(".option_numberCount");
+          if (input) {
+            const lengths = apiData?.stockCount;
 
-      // if (event.target.closest(".option_minBtn")) {
-      //   this.optionState.optionValue.map((value) => {
-      //     if (value.id) {
-      //       const input = event.target.closest(".selected_container").querySelector(".option_numberCount");
-      //       let value = input.value;
-
-      //       value--;
-      //       if (value > 0) {
-      //         const { id, optionName, additionalFee } = optionClickItem;
-      //         input.value = value;
-      //         this.setOptionState({
-      //           ...this.optionState,
-      //           optionValue: [
-      //             {
-      //               id,
-      //               optionName,
-      //               additionalFee,
-      //               countValue: value,
-      //             },
-      //           ],
-      //         });
-      //       }
-      //     }
-      //   });
-      // } else if (event.target.closest(".option_plusBtn")) {
-      //   const input = event.target.closest(".selected_container").querySelector(".option_numberCount");
-      //   const maxValue = parseInt(input.getAttribute("max"));
-      //   let value = input.value;
-      //   if (value < maxValue) {
-      //     value++;
-      //   }
-      //   input.value = value;
-      // }
-      // });
+            if (input.value > lengths) {
+              input.value = lengths;
+            }
+            this.optionState.optionValue.map((v) => {
+              if (v.id === +$options.dataset.optionId) {
+                v.countValue = parseInt(input.value);
+                document.querySelectorAll(".option_price").forEach((value) => {
+                  if (parseInt(value.dataset.optionpriceId) === v.id) {
+                    value.innerText = `${(v.price * v.countValue).toLocaleString("ko-KR")}원`;
+                  }
+                });
+              }
+            });
+          }
+        }
+      });
 
       // 동적으로 생성된 요소에 이벤트 설정하기, 해당 옵션 박스의 X버튼 클릭 시 옵션 박스 삭제
       $selectedContainer.addEventListener("click", (event) => {
