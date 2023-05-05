@@ -486,7 +486,9 @@ function ItemDetail({ $target, id, listRender }) {
           const input = event.target.closest(".option_numberCount");
           if (input) {
             const lengths = apiData?.stockCount;
-
+            if (input.value === "") {
+              input.value = 0;
+            }
             if (input.value > lengths) {
               input.value = lengths;
             }
@@ -501,6 +503,30 @@ function ItemDetail({ $target, id, listRender }) {
                 });
               }
             });
+          }
+        }
+      });
+
+      // * 옵션이 있는 input number 숫자 이외에 입력 금지 설정
+      $selectedContainer.addEventListener("keydown", (event) => {
+        const $options = event.target.closest(".selected_option");
+        if ($options) {
+          const input = $options.querySelector(".option_numberCount");
+          if (input) {
+            input.onkeydown = (e) => {
+              // TODO 숫자, 백스페이스, 위아래 화살표 키 설정하기 (양수만 입력 가능)
+              if (
+                !(
+                  (e.keyCode > 95 && e.keyCode < 106) ||
+                  (e.keyCode > 47 && e.keyCode < 58) ||
+                  e.keyCode == 8 ||
+                  e.keyCode == 38 ||
+                  e.keyCode == 40
+                )
+              ) {
+                return false;
+              }
+            };
           }
         }
       });
