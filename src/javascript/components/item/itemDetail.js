@@ -270,7 +270,9 @@ function ItemDetail({ $target, id, listRender }) {
             (a, b) => a + b.countValue,
             0
           )}</span>개</span>
-          <span class="total_price_count">${this.optionState.optionValue.reduce((a, b) => a + b.totalPrice, 0)}</span>원
+          <span class="total_price_count">${this.optionState.optionValue
+            .reduce((a, b) => a + b.totalPrice, 0)
+            .toLocaleString("ko-KR")}</span>원
           </div>
           `;
         }
