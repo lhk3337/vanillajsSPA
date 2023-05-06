@@ -133,6 +133,12 @@ function ItemDetail({ $target, id, listRender }) {
               <button class="addCart_btn">
                 <img src="/src/assets/icon-shopping-cart.svg" alt="addCartBtn" />
               </button>
+              <div class="add__cart__container">
+                <span class="triangle"></span>
+                <h1>장바구니에 추가되었습니다.</h1>
+                <button class="go__cart__btn">장바구니 가기</button>
+                <button class="continue__btn">계속 쇼핑 하기</button>
+              </div>
             </div>
         `;
             this.noOptionCount();
@@ -146,15 +152,21 @@ function ItemDetail({ $target, id, listRender }) {
               <button class="addCart_btn">
                 <img src="/src/assets/icon-shopping-cart.svg" alt="addCartBtn" />
               </button>
+              <div class="add__cart__container">
+                <span class="triangle"></span>
+                <h1>장바구니에 추가되었습니다.</h1>
+                <button class="go__cart__btn">장바구니 가기</button>
+                <button class="continue__btn">계속 쇼핑 하기</button>
+              </div>
             </div>
         `;
             this.selectedOption();
             this.OptionCount();
             this.optionTotalCount();
           }
-
-          this.likedButton(); // 좋아요 버튼 요소 컴포넌트 호출
+          this.likedButton(); // TODO 좋아요 버튼 요소 컴포넌트 호출
         } else {
+          // * 품절된 상품 버튼 비활성화
           $buyInput.innerHTML = `
           <div class="product_nostock_btns">
             <button class="submit_btn">품절된 상품입니다.</button>
@@ -163,7 +175,7 @@ function ItemDetail({ $target, id, listRender }) {
             </button>
           </div>
         `;
-          this.likedButton(); // 좋아요 버튼 요소 컴포넌트 호출
+          this.likedButton(); // TODO 좋아요 버튼 요소 컴포넌트 호출
         }
       };
 
@@ -570,6 +582,12 @@ function ItemDetail({ $target, id, listRender }) {
           console.log(this.noOptionState);
         }
         setItem("product_carts", cartData.concat(apiData.option.length > 0 ? this.optionState : this.noOptionState));
+      });
+
+      const $addCart_btn = document.querySelector(".addCart_btn");
+      const $add__cart__container = document.querySelector(".add__cart__container");
+      $addCart_btn.addEventListener("click", () => {
+        $add__cart__container.style.display = "flex";
       });
     }
   };

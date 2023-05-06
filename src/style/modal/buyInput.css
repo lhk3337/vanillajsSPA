@@ -16,7 +16,6 @@
 .buy_input .option_input_container {
   padding-top: 10px;
   padding-bottom: 10px;
-  margin-bottom: 16px;
   border-top: 2px solid var(--primary-line-color);
   border-bottom: 2px solid var(--primary-line-color);
 }
@@ -177,10 +176,8 @@
 /* 옵션 선택시 정보 및 카운트 input 표시되는 컴포넌트 */
 
 .option_input_container .selected_container {
-  margin-top: 16px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
 }
 
 .selected_container .selected_option {
@@ -189,7 +186,11 @@
   background: var(--secondary-bg-color);
   padding: 14px;
   position: relative;
+  margin-top: 16px;
   border-radius: 5px;
+}
+.selected_option:last-child {
+  margin-bottom: 6px;
 }
 
 .selected_option .closeOption {
@@ -317,6 +318,7 @@
 .product_stock_btns {
   display: flex;
   gap: 6px;
+  position: relative;
 }
 
 /*  바로구매 버튼 */
@@ -372,6 +374,65 @@
 .addCart_btn img {
   width: 22px;
   height: 22px;
+}
+
+.product_stock_btns .add__cart__container {
+  position: absolute;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  top: 75px;
+  right: -15px;
+  cursor: default;
+  width: 220px;
+  height: 126px;
+  border: 1px solid #c4c4c4;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 4px 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+.add__cart__container .triangle {
+  display: block;
+  height: 18px;
+  width: 18px;
+  background-color: inherit;
+  border: inherit;
+  position: absolute;
+  bottom: 115px;
+  left: calc(50% - 10px);
+  clip-path: polygon(0% 0%, 100% 100%, 0% 100%);
+  transform: rotate(135deg);
+  border-radius: 0 0 0 0.25em;
+}
+
+.add__cart__container h1 {
+  font-size: 14px;
+}
+
+.add__cart__container .go__cart__btn {
+  outline: none;
+  margin-top: 10px;
+  margin-bottom: 6px;
+  width: 180px;
+  height: 30px;
+  border: 1px solid var(--primary-border-color);
+  background-color: #ffff;
+  border-radius: 5px;
+  color: var(--secondary-text-color);
+  cursor: pointer;
+}
+
+.add__cart__container .continue__btn {
+  outline: none;
+  width: 180px;
+  height: 30px;
+  border: 1px solid var(--primary-border-color);
+  background-color: #ffff;
+  border-radius: 5px;
+  color: var(--secondary-text-color);
+  cursor: pointer;
 }
 
 /* 좋아요 버튼 */
