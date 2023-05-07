@@ -1,4 +1,5 @@
 import api from "../../lib/api.js";
+import { routeChange } from "../../lib/router.js";
 import { getItem, setItem, removeItem } from "../../lib/storage.js";
 function ItemDetail({ $target, id, listRender }) {
   this.state = { apiAddr: null, apiData: null };
@@ -584,10 +585,29 @@ function ItemDetail({ $target, id, listRender }) {
         setItem("product_carts", cartData.concat(apiData.option.length > 0 ? this.optionState : this.noOptionState));
       });
 
+      // * cart button Event handler
       const $addCart_btn = document.querySelector(".addCart_btn");
       const $add__cart__container = document.querySelector(".add__cart__container");
+      const $goCartBtn = document.querySelector(".go__cart__btn");
+      const $continueCartBtn = document.querySelector(".continue__btn");
+
       $addCart_btn.addEventListener("click", () => {
         $add__cart__container.style.display = "flex";
+      });
+
+      $continueCartBtn.addEventListener("click", () => {
+        $add__cart__container.remove();
+      });
+
+      $goCartBtn.addEventListener("click", () => {
+        routeChange("/cart");
+        $modal.remove();
+        document.body.style.overflow = "";
+        /**
+         * TODO 장바구니 가기 클릭 시 모달창을 닫고 cart 경로로 이동,
+         * TODO 모달창이 열리면 메인 페이지의 스크롤을 고정하기 위해 overflow를 hidden 설정하였는데,
+         * TODO 모달창을 닫으면서 메인 페이지의 스크롤 고정을 해지 하기 위해 document.body.style.overflow = ""; 설정
+         **/
       });
     }
   };
