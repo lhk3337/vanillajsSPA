@@ -577,12 +577,22 @@ function ItemDetail({ $target, id, listRender }) {
       const $submitBtn = document.querySelector(".submit_btn");
       $submitBtn.addEventListener("click", () => {
         const cartData = getItem("product_carts", []);
-        if (apiData.option.length > 0) {
-          console.log(this.optionState);
+        if (apiData.option.length !== 0) {
+          if (!this.optionState.optionValue.length) {
+            alert("옵션을 선택해주세요");
+            // TODO 구매하기 클릭할때 옵션을 선택하지 않을 경우 alert 표시
+          } else {
+            setItem("product_carts", cartData.concat(this.optionState));
+            closeModalMoveRoute("/cart");
+            // TODO 옵션 선택 한 제품의 데이터(this.optionState)를 localStorage에 product_carts 키 형식으로 저장하고, /cart 페이지로 이동
+          }
+          // console.log(this.optionState);
         } else {
-          console.log(this.noOptionState);
+          setItem("product_carts", cartData.concat(this.noOptionState));
+          closeModalMoveRoute("/cart");
+          // TODO 옵션 선택 없는 제품의 데이터(this.noOptionState)를 localStorage에 product_carts 키 형식으로 저장하고, /cart 페이지로 이동
+          // console.log(this.noOptionState);
         }
-        setItem("product_carts", cartData.concat(apiData.option.length > 0 ? this.optionState : this.noOptionState));
       });
 
       // * cart button Event handler
@@ -593,23 +603,30 @@ function ItemDetail({ $target, id, listRender }) {
 
       $addCart_btn.addEventListener("click", () => {
         $add__cart__container.style.display = "flex";
+        closeModalMoveRoute("/cart");
       });
 
       $continueCartBtn.addEventListener("click", () => {
         $add__cart__container.remove();
+        closeModalMoveRoute("/");
       });
 
       $goCartBtn.addEventListener("click", () => {
-        routeChange("/cart");
-        $modal.remove();
-        document.body.style.overflow = "";
-        /**
-         * TODO 장바구니 가기 클릭 시 모달창을 닫고 cart 경로로 이동,
-         * TODO 모달창이 열리면 메인 페이지의 스크롤을 고정하기 위해 overflow를 hidden 설정하였는데,
-         * TODO 모달창을 닫으면서 메인 페이지의 스크롤 고정을 해지 하기 위해 document.body.style.overflow = ""; 설정
-         **/
+        closeModalMoveRoute("/cart");
+        // TODO closeModalMoveRoute함수를 이용하여 cart 경로로 이동하기
       });
     }
+    // * 모달 창 닫기 설정과 페이지 이동 함수
+    const closeModalMoveRoute = (routeUrl) => {
+      routeChange(routeUrl);
+      $modal.remove();
+      document.body.style.overflow = "";
+      /**
+       * TODO 해당하는 routeURL 경로로 이동,
+       * TODO 모달창이 열리면 메인 페이지의 스크롤을 고정하기 위해 overflow를 hidden 설정하였는데,
+       * TODO 모달창을 닫으면서 메인 페이지의 스크롤 고정을 해지 하기 위해 document.body.style.overflow = ""; 설정
+       **/
+    };
   };
 
   // ! 반복으로 이벤트를 발생 시킬때 this.render내에 addEventListener가 있으면 느려지는 원인으로 하트 좋아요 이벤트 설정을 최상단에 위치 시킴
