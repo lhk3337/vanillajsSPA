@@ -605,20 +605,48 @@ function ItemDetail({ $target, id, listRender }) {
       const $goCartBtn = document.querySelector(".go__cart__btn");
       const $continueCartBtn = document.querySelector(".continue__btn");
 
-      $addCart_btn.addEventListener("click", () => {
-        $add__cart__container.style.display = "flex";
-        closeModalMoveRoute("/cart");
-      });
+      if (apiData.stockCount > 0) {
+        $addCart_btn.addEventListener("click", (event) => {
+          event.stopPropagation();
+          const cartData = getItem("product_carts", []);
+          const { productName, price, discountRate, thumbnailImg, shippingFee } = apiData;
+          if (apiData.option.length !== 0) {
+            if (!this.optionState.optionValue.length) {
+              alert("옵션을 선택해주세요");
+              // TODO 구매하기 클릭할때 옵션을 선택하지 않을 경우 alert 표시
+            } else {
+              const resultData = { productName, price, discountRate, thumbnailImg, shippingFee, ...this.optionState };
+              $add__cart__container.style.display = "flex";
+              setItem("product_carts", cartData.concat(resultData));
+            }
+          } else {
+            const resultData = { productName, price, discountRate, thumbnailImg, shippingFee, ...this.noOptionState };
+            $add__cart__container.style.display = "flex";
+            setItem("product_carts", cartData.concat(resultData));
+          }
+        });
 
-      $continueCartBtn.addEventListener("click", () => {
-        $add__cart__container.remove();
-        closeModalMoveRoute("/");
-      });
+        // * 장바구니 가기 버튼 클릭 handler
+        $goCartBtn.addEventListener("click", () => {
+          $add__cart__container.remove();
+          closeModalMoveRoute("/cart");
+          // TODO closeModalMoveRoute함수를 이용하여 cart 경로로 이동하기
+        });
 
-      $goCartBtn.addEventListener("click", () => {
-        closeModalMoveRoute("/cart");
-        // TODO closeModalMoveRoute함수를 이용하여 cart 경로로 이동하기
-      });
+        // * 계속 쇼핑하기 버튼 클릭 handler
+        $continueCartBtn.addEventListener("click", () => {
+          $add__cart__container.remove();
+          closeModalMoveRoute("/");
+        });
+
+        // * 장바구니 모달 이외에 클릭 시 닫기
+        document.addEventListener("click", (event) => {
+          // TODO add cart 모달 창 이외를 클릭했을 때 add cart 모달 창 닫기
+          if (!$add__cart__container.contains(event.target)) {
+            $add__cart__container.style.display = "none";
+          }
+        });
+      }
     }
     // * 모달 창 닫기 설정과 페이지 이동 함수
     const closeModalMoveRoute = (routeUrl) => {
