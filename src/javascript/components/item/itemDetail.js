@@ -574,21 +574,25 @@ function ItemDetail({ $target, id, listRender }) {
         }
       });
 
+      // * 바로 구매 클릭 이벤트 설정하기
       const $submitBtn = document.querySelector(".submit_btn");
       $submitBtn.addEventListener("click", () => {
         const cartData = getItem("product_carts", []);
+        const { productName, price, discountRate, thumbnailImg, shippingFee } = apiData;
         if (apiData.option.length !== 0) {
           if (!this.optionState.optionValue.length) {
             alert("옵션을 선택해주세요");
             // TODO 구매하기 클릭할때 옵션을 선택하지 않을 경우 alert 표시
           } else {
-            setItem("product_carts", cartData.concat(this.optionState));
+            const resultData = { productName, price, discountRate, thumbnailImg, shippingFee, ...this.optionState };
+            setItem("product_carts", cartData.concat(resultData));
             closeModalMoveRoute("/cart");
             // TODO 옵션 선택 한 제품의 데이터(this.optionState)를 localStorage에 product_carts 키 형식으로 저장하고, /cart 페이지로 이동
           }
           // console.log(this.optionState);
         } else {
-          setItem("product_carts", cartData.concat(this.noOptionState));
+          const resultData = { productName, price, discountRate, thumbnailImg, shippingFee, ...this.noOptionState };
+          setItem("product_carts", cartData.concat(resultData));
           closeModalMoveRoute("/cart");
           // TODO 옵션 선택 없는 제품의 데이터(this.noOptionState)를 localStorage에 product_carts 키 형식으로 저장하고, /cart 페이지로 이동
           // console.log(this.noOptionState);
