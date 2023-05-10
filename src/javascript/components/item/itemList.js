@@ -12,7 +12,7 @@ export default function ItemList({ $target, $main, apiData }) {
 
   this.render = async () => {
     const { productData, apiAddr } = await this.data();
-    // api데이터 호출이 실패 했을때 404 not found로 핸들러
+    // TODO api데이터 호출이 실패 했을때 404 not found 페이지 설정
     if (!productData) {
       $main.innerHTML = `
       <div class="not_found">
@@ -65,7 +65,7 @@ export default function ItemList({ $target, $main, apiData }) {
               <button class="cart_btn"><img src="/src/assets/cart-btn.svg"></button>
               `;
 
-      // evnet handling
+      // * 해당 아이템 클릭 시 상세 아이템 api 데이터 출력 및 하트 버튼에 대한 핸들링
       Array.from(document.querySelectorAll(".product_list")).map((v) =>
         v.addEventListener("click", (e) => {
           if (e.target.className === "heart_btn_cancel") {
@@ -83,9 +83,12 @@ export default function ItemList({ $target, $main, apiData }) {
         })
       );
     }
-    document.querySelector(".cart_btn").addEventListener("click", () => {
-      routeChange("/cart");
-    });
+
+    // * 카트 버튼 클릭 이벤트 핸들러
+    if (document.querySelector(".cart_btn")) {
+      document.querySelector(".cart_btn").addEventListener("click", () => {
+        routeChange("/cart");
+      });
+    }
   };
-  // 해당 아이템 클릭 시 상세 아이템 api 데이터 출력 및 하트 버튼에 대한 핸들링
 }
