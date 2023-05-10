@@ -578,7 +578,7 @@ function ItemDetail({ $target, id, listRender }) {
       const $submitBtn = document.querySelector(".submit_btn");
       $submitBtn.addEventListener("click", () => {
         const cartData = getItem("product_carts", []);
-        const { productName, price, discountRate, thumbnailImg, shippingFee } = apiData;
+        const { productName, price, discountRate, thumbnailImg, shippingFee, id } = apiData;
         if (apiData.option.length !== 0) {
           if (!this.optionState.optionValue.length) {
             alert("옵션을 선택해주세요");
@@ -591,7 +591,7 @@ function ItemDetail({ $target, id, listRender }) {
           }
           // console.log(this.optionState);
         } else {
-          const resultData = { productName, price, discountRate, thumbnailImg, shippingFee, ...this.noOptionState };
+          const resultData = { productName, price, discountRate, thumbnailImg, shippingFee, id, ...this.noOptionState };
           setItem("product_carts", cartData.concat(resultData));
           closeModalMoveRoute("/cart");
           // TODO 옵션 선택 없는 제품의 데이터(this.noOptionState)를 localStorage에 product_carts 키 형식으로 저장하고, /cart 페이지로 이동
