@@ -17,7 +17,7 @@ function ItemDetail({ $target, id, listRender }) {
     this.state = nextState;
     this.Render();
   };
-  this.selectedOptions = [];
+
   // 좋아요 상태 변경 메서드
   this.setLikeState = (nextState) => {
     this.likeState = nextState;
