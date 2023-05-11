@@ -164,20 +164,41 @@ function ItemCart({ $main }) {
       routeChange("/");
     });
 
-    const $optionToggleBtn = document.querySelector(".toggle-btn");
+    // * 쿠폰 옵션 박스 event 설정하기
+    const $couponeOptionToggleBtn = document.querySelector(".toggle-btn");
     const $selectBoxOption = document.querySelector(".select-box-option");
-    if ($optionToggleBtn && $selectBoxOption) {
-      $optionToggleBtn.addEventListener("click", () => {
+    if ($couponeOptionToggleBtn && $selectBoxOption) {
+      $couponeOptionToggleBtn.addEventListener("click", () => {
         $selectBoxOption.classList.toggle("on");
-        $optionToggleBtn.classList.toggle("on");
+        $couponeOptionToggleBtn.classList.toggle("on");
       });
       $selectBoxOption.addEventListener("click", (e) => {
         if (e.target.nodeName === "BUTTON") {
           $selectBoxOption.classList.remove("on");
-          $optionToggleBtn.classList.remove("on");
+          $couponeOptionToggleBtn.classList.remove("on");
         }
       });
     }
+
+    // AllCheckbox click event 설정하기
+    const allCheck = document.getElementById("allCheckbox");
+    const checkboxs = document.querySelectorAll('input[type="checkbox"]:not(#allCheckbox)');
+
+    allCheck.addEventListener("change", () => {
+      checkboxs.forEach((_, i) => {
+        if (checkboxs[i] != allCheck) {
+          checkboxs[i].checked = allCheck.checked;
+        }
+      });
+    });
+
+    // 항목의 checkbox가 모두 체크되면 AllCheckbox가 체크 됨
+    checkboxs.forEach((checkbox) => {
+      checkbox.addEventListener("change", () => {
+        const AllCheckbox = [...checkboxs].every((checkbox) => checkbox.checked);
+        allCheck.checked = AllCheckbox;
+      });
+    });
   };
 }
 export default ItemCart;
