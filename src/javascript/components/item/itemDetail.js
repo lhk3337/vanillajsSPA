@@ -577,7 +577,7 @@ function ItemDetail({ $target, id, listRender }) {
       // * 바로 구매 클릭 이벤트 설정하기
       const $submitBtn = document.querySelector(".submit_btn");
       $submitBtn.addEventListener("click", () => {
-        const cartData = getItem("product_carts", []);
+        let cartData = getItem("product_carts", []);
         const { productName, price, discountRate, thumbnailImg, shippingFee, id } = apiData;
         if (apiData.option.length !== 0) {
           if (!this.optionState.optionValue.length) {
@@ -585,7 +585,37 @@ function ItemDetail({ $target, id, listRender }) {
             // TODO 구매하기 클릭할때 옵션을 선택하지 않을 경우 alert 표시
           } else {
             const resultData = { productName, price, discountRate, thumbnailImg, shippingFee, ...this.optionState };
-            setItem("product_carts", cartData.concat(resultData));
+            if (cartData) {
+              let duplicated = false;
+              cartData.forEach((item) => {
+                if (item.id === resultData.id) {
+                  for (let newOption of resultData.optionValue) {
+                    let savedOption = item.optionValue.find((option) => option.id === newOption.id);
+                    // TODO 해당 localStorage의 optionValue의 id와 추가할 데이터의 optionValue id가 같은 해당 localStorage의 optionValue를 찾음
+                    if (savedOption) {
+                      /**
+                       * TODO savedOption가 있으면 localStorage optionValue의 countValue와 totalPrice는 추가할 데이터의 optionValue의 countValue와 totalPrice와 더함
+                       **/
+                      savedOption.countValue += newOption.countValue;
+                      savedOption.totalPrice += newOption.totalPrice;
+                    } else {
+                      // TODO savedOption가 없으면 해당 cartData optionValue 배열에 result optionValue항목을 push한다.
+                      item.optionValue.push(newOption);
+                    }
+                    duplicated = true;
+                  }
+                }
+              });
+              if (!duplicated) {
+                // TODO  cartData 요소가 중복 되지 않으면 resultData를 push한다.
+                cartData.push(resultData);
+              }
+            } else {
+              // TODO localStorage에 product_carts가 없으면 cartData에 resultData를 배열 형태로 저장
+              cartData = [resultData];
+            }
+            // TODO cartData를 setItem하기
+            setItem("product_carts", cartData);
             closeModalMoveRoute("/cart");
             // TODO 옵션 선택 한 제품의 데이터(this.optionState)를 localStorage에 product_carts 키 형식으로 저장하고, /cart 페이지로 이동
           }
@@ -608,7 +638,7 @@ function ItemDetail({ $target, id, listRender }) {
       if (apiData.stockCount > 0) {
         $addCart_btn.addEventListener("click", (event) => {
           event.stopPropagation();
-          const cartData = getItem("product_carts", []);
+          let cartData = getItem("product_carts", []);
           const { productName, price, discountRate, thumbnailImg, shippingFee } = apiData;
           if (apiData.option.length !== 0) {
             if (!this.optionState.optionValue.length) {
@@ -616,8 +646,30 @@ function ItemDetail({ $target, id, listRender }) {
               // TODO 구매하기 클릭할때 옵션을 선택하지 않을 경우 alert 표시
             } else {
               const resultData = { productName, price, discountRate, thumbnailImg, shippingFee, ...this.optionState };
+              if (cartData) {
+                let duplicated = false;
+                cartData.forEach((item) => {
+                  if (item.id === resultData.id) {
+                    for (let newOption of resultData.optionValue) {
+                      let savedOption = item.optionValue.find((option) => option.id === newOption.id);
+                      if (savedOption) {
+                        savedOption.countValue += newOption.countValue;
+                        savedOption.totalPrice += newOption.totalPrice;
+                      } else {
+                        item.optionValue.push(newOption);
+                      }
+                      duplicated = true;
+                    }
+                  }
+                });
+                if (!duplicated) {
+                  cartData.push(resultData);
+                }
+              } else {
+                cartData = [resultData];
+              }
               $add__cart__container.style.display = "flex";
-              setItem("product_carts", cartData.concat(resultData));
+              setItem("product_carts", cartData);
             }
           } else {
             const resultData = { productName, price, discountRate, thumbnailImg, shippingFee, ...this.noOptionState };
