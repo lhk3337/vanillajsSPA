@@ -591,13 +591,18 @@ function ItemDetail({ $target, id, listRender }) {
                 if (item.id === resultData.id) {
                   for (let newOption of resultData.optionValue) {
                     let savedOption = item.optionValue.find((option) => option.id === newOption.id);
-                    // TODO 해당 localStorage의 optionValue의 id와 추가할 데이터의 optionValue id가 같은 해당 localStorage의 optionValue를 찾음
+                    /**
+                     * TODO 해당 localStorage의 optionValue의 id와 추가할 데이터의 optionValue id가 같은 해당 localStorage의 optionValue를 찾음
+                     * TODO savedOption변수는 localStorage optionValue의 객체를 참조
+                     **/
                     if (savedOption) {
-                      /**
-                       * TODO savedOption가 있으면 localStorage optionValue의 countValue와 totalPrice는 추가할 데이터의 optionValue의 countValue와 totalPrice와 더함
-                       **/
                       savedOption.countValue += newOption.countValue;
                       savedOption.totalPrice += newOption.totalPrice;
+                      /**
+                       * TODO savedOption가 있으면 savedOption은 localStorage optionValue의 객체를 참조하여
+                       * TODO savedOption는  localStorage optionValue를 참조 하여 데이터를 불러오고, 추가할 데이터의 optionValue의 countValue와 totalPrice와 더함
+                       * TODO savedOption 참조 값에 의해 localStorage optionValue의 countValue와 totalPrice가 변경 됨
+                       **/
                     } else {
                       // TODO savedOption가 없으면 해당 cartData optionValue 배열에 result optionValue항목을 push한다.
                       item.optionValue.push(newOption);
