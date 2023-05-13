@@ -195,8 +195,14 @@ input[type="checkbox"]:checked + label {
   font-weight: 400;
   font-size: 14px;
   line-height: 18px;
+  color: var(--secondary-text-color);
 }
-
+.coupon_discount span:last-child {
+  margin-top: 6px;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--thirds-color);
+}
 .product_info_container .prices {
   display: flex;
 }

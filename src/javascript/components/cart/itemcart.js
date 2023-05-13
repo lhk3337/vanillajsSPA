@@ -1,6 +1,6 @@
 import { routeChange } from "../../lib/router.js";
 import api from "../../lib/api.js";
-import { getItem } from "../../lib/storage.js";
+import { getItem, setItem } from "../../lib/storage.js";
 function ItemCart({ $main }) {
   const cartData = getItem("product_carts", []);
   this.state = { couponApi: null, apiAddr: null };
@@ -89,7 +89,6 @@ function ItemCart({ $main }) {
     };
 
     this.RenderCartList = () => {
-      console.log(cartData);
       if (cartData.length) {
         document.querySelector(".cart_product_list").innerHTML = `
         <ul class="product_cart_lists">
@@ -128,8 +127,8 @@ function ItemCart({ $main }) {
                   }</div>
                 </div>
                 <div class="coupon_discount">
-                  <span>Hack Your Life 개발자 노트북...</span>
-                  <span>-2,000원</span>
+                  <span>-</span>
+                  <span>-</span>
                 </div>
                 <div class="prices">
                   <div class="shippingFee">${v.shippingFee.toLocaleString("ko-KR")}원</div>
@@ -167,6 +166,9 @@ function ItemCart({ $main }) {
     // * 쿠폰 옵션 박스 event 설정하기
     const $couponeOptionToggleBtn = document.querySelector(".toggle-btn");
     const $selectBoxOption = document.querySelector(".select-box-option");
+    const allCheck = document.getElementById("allCheckbox");
+    const checkboxs = document.querySelectorAll('input[type="checkbox"]:not(#allCheckbox)');
+
     if ($couponeOptionToggleBtn && $selectBoxOption) {
       $couponeOptionToggleBtn.addEventListener("click", () => {
         $selectBoxOption.classList.toggle("on");
@@ -180,9 +182,34 @@ function ItemCart({ $main }) {
       });
     }
 
+    // * 선택 삭제하기 버튼 클릭 이벤트 (체크박스의 체크하면 그 요소 삭제하기)
+    const $selectDeleteBtn = document.querySelector(".sel_btn_del");
+    $selectDeleteBtn.addEventListener("click", () => {
+      if (window.confirm("상품을 삭제 하시겠습니까?")) {
+        const checkedItemIds = [];
+        checkboxs.forEach((element) => {
+          if (element.checked) {
+            checkedItemIds.push(+element.dataset.itemId);
+          }
+          // TODO checkbox를 checked를 하게 되면 checkbox의 dataset을 checkedItemIds에 저장
+        });
+        // TODO checkedItemIds 배열이 있으면(checkbox checked된 것) 아래의 if문 실행
+
+        if (checkedItemIds.length > 0) {
+          const filteredData = cartData.filter((item) => !checkedItemIds.includes(item.id));
+          /**
+           * TODO cartData의 id가 checkedItemIds의 id가 포함되면 true이나 체크된 것을 삭제 해야 하므로 !를 사용 하여 false로 만듦
+           * TODO filter를 이용하여 콜백 함수의 조건에 충족한 cartData의 요소를 새로운 배열로 반환하여 filteredData 변수에 저장한다.
+           **/
+
+          setItem("product_carts", filteredData);
+          // TODO 변경된 filteredData를 localStorage product_carts에 저장하기
+        }
+        routeChange("/cart");
+      }
+    });
+
     // AllCheckbox click event 설정하기
-    const allCheck = document.getElementById("allCheckbox");
-    const checkboxs = document.querySelectorAll('input[type="checkbox"]:not(#allCheckbox)');
 
     allCheck.addEventListener("change", () => {
       checkboxs.forEach((_, i) => {
