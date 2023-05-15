@@ -224,3 +224,40 @@ input[type="checkbox"]:checked + label {
   text-align: center;
   width: 131px;
 }
+.order_product_container .order_amount_box {
+  margin: 60px 0px;
+  height: 150px;
+  background-color: var(--primary-color);
+  border-radius: 10px;
+  /* padding-top: 46px; */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.order_amount_box .total_order_item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 100px;
+  gap: 100px;
+}
+.total_order_item .order_item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.order_item span:last-child {
+  font-weight: 700;
+  font-size: 24px;
+}
+.order_amount_box .pay_amount {
+  margin-right: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.pay_amount span:last-child {
+  font-weight: 700;
+  font-size: 36px;
+  color: var(--thirds-color);
+}

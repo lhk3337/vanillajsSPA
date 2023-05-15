@@ -84,8 +84,10 @@ function ItemCart({ $main }) {
           </ul>
         </div>
         <div class="cart_product_list"></div>
+        <div class="order_amount_box"></div>
       `;
       this.RenderCartList();
+      this.RenderOrderAmountBox();
     };
 
     this.RenderCartList = () => {
@@ -153,7 +155,34 @@ function ItemCart({ $main }) {
         ).innerHTML = `<div class="empty_cart">장바구니에 담긴 상품이 없습니다.</div>`;
       }
     };
-
+    this.RenderOrderAmountBox = () => {
+      document.querySelector(".order_amount_box").innerHTML = `
+      <div class="total_order_item">
+        <div class="order_item">
+          <span>총 상품금액</span>
+          <span>80820원</span>
+        </div>
+        <div class="order_item">
+          <img src="/src/assets/minus-icon-bg-white.svg" alt="" />
+        </div>
+        <div class="order_item">
+          <span>쿠폰 할인</span>
+          <span>4000원</span>
+        </div>
+        <div class="order_item">
+          <img src="/src/assets/plus-icon-bg-white.svg" alt="" />
+        </div>
+        <div class="order_item">
+          <span>배송비</span>
+          <span>3000원</span>
+        </div>
+      </div>
+      <div class="pay_amount">
+        <span>결제 예정 금액</span>
+        <span>79820원</span>
+      </div>
+      `;
+    };
     this.RenderCouponComponent();
     this.RenderOrderComponent();
 
