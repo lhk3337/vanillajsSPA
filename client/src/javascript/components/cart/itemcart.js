@@ -4,7 +4,9 @@ import { getItem, setItem } from "../../lib/storage.js";
 function ItemCart({ $main }) {
   const cartData = getItem("product_carts", []);
   cartData?.forEach((v) => {
-    v.totalValue = v.optionValue ? v.optionValue.reduce((a, b) => a + b.optionTotalPrice, 0) : v.totalValue;
+    if (!v.totalValue) {
+      v.totalValue = v.optionValue ? v.optionValue.reduce((a, b) => a + b.optionTotalPrice, 0) : v.totalValue;
+    }
   });
 
   this.state = { couponApi: null, apiAddr: null };
@@ -142,13 +144,13 @@ function ItemCart({ $main }) {
                   }</div>
                 </div>
                 <div class="coupon_discount">
-                  <span>-</span>
+                  <span>${v.couponName ? `${v.couponName.substr(0, 15)}...` : "-"}</span>
                   <span>${v.discount ? `-${v.discount}원` : "-"}</span>
                 </div>
                 <div class="prices">
                   <div class="shippingFee">${v.shippingFee.toLocaleString("ko-KR")}원</div>
                   <div class="order_price">
-                  <span>${v.totalValue}원</span>
+                  <span>${v.totalValue.toLocaleString("ko-KR")}원</span>
                   </div>
                 </div>
               </div>
@@ -219,6 +221,45 @@ function ItemCart({ $main }) {
         }
       });
     }
+
+    const $optionSelectBtn = document.querySelectorAll(".option-btn");
+
+    $optionSelectBtn.forEach((element) => {
+      element.addEventListener("click", () => {
+        const {
+          dataset: { optionId },
+        } = element;
+        const optionClickItem = couponApi.find((v) => v.id === +optionId);
+        const couponAvailableItem = cartData.find((v) => v.id === optionClickItem.productid);
+
+        if (couponAvailableItem) {
+          const updateData = this.couponState.cartData.map((item) => {
+            if (item.id === optionClickItem.productid) {
+              return {
+                ...item,
+                discount: optionClickItem.discount === 1500 ? item.discount : optionClickItem.discount,
+                shippingFee:
+                  item.shippingFee === 0
+                    ? item.shippingFee
+                    : optionClickItem.discount === 1500
+                    ? optionClickItem.discount - item.shippingFee
+                    : item.shippingFee,
+                couponName: optionClickItem.couponName,
+                totalValue: item.discount
+                  ? item.totalValue
+                  : item.totalValue - (optionClickItem.discount === 1500 ? 0 : optionClickItem.discount),
+              };
+            }
+            return item;
+          });
+          this.setCouponState({
+            ...this.couponState,
+            cartData: updateData,
+          });
+          setItem("product_carts", updateData);
+        }
+      });
+    });
 
     // * 선택 삭제하기 버튼 클릭 이벤트 (체크박스의 체크하면 그 요소 삭제하기)
     const $selectDeleteBtn = document.querySelector(".sel_btn_del");
