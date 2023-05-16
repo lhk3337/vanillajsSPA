@@ -6,7 +6,7 @@ function ItemDetail({ $target, id, listRender }) {
   this.likeState = { liked: Boolean(getItem(id, "")) };
   this.noOptionState = {
     countValue: 1,
-    totalvalue: 0,
+    totalValue: 0,
   };
   this.optionState = {
     optionValue: [],
@@ -29,7 +29,7 @@ function ItemDetail({ $target, id, listRender }) {
     const apiData = await (await api()).fetchProduct(id);
     this.setState({ ...this.state, apiAddr, apiData });
     this.setOptionState({ id: apiData.id, ...this.optionState });
-    this.setNoOptionState({ ...this.noOptionState, id: apiData.id, totalvalue: apiData.price });
+    this.setNoOptionState({ ...this.noOptionState, id: apiData.id, totalValue: apiData.price });
   };
 
   this.setNoOptionState = (nextState) => {
@@ -203,7 +203,7 @@ function ItemDetail({ $target, id, listRender }) {
           <h1>총 상품 금액</h1>
           <div class="total_price_info">
           <span class="count_text">총 수량 <span class="count_number">${this.noOptionState.countValue}</span>개</span>
-          <span class="total_price_count">${this.noOptionState.totalvalue.toLocaleString("ko-KR")}</span>원
+          <span class="total_price_count">${this.noOptionState.totalValue.toLocaleString("ko-KR")}</span>원
           </div>
           `;
         }
@@ -284,7 +284,7 @@ function ItemDetail({ $target, id, listRender }) {
             0
           )}</span>개</span>
           <span class="total_price_count">${this.optionState.optionValue
-            .reduce((a, b) => a + b.totalPrice, 0)
+            .reduce((a, b) => a + b.optionTotalPrice, 0)
             .toLocaleString("ko-KR")}</span>원
           </div>
           `;
@@ -365,7 +365,7 @@ function ItemDetail({ $target, id, listRender }) {
           value--;
           if (value > 0) {
             $numberCount.value = value;
-            this.setNoOptionState({ countValue: value, totalvalue: value * apiData.price });
+            this.setNoOptionState({ countValue: value, totalValue: value * apiData.price });
           }
         }
         if ($plusBtn) {
@@ -374,7 +374,7 @@ function ItemDetail({ $target, id, listRender }) {
             value++;
           }
           $numberCount.value = value;
-          this.setNoOptionState({ countValue: value, totalvalue: value * apiData.price });
+          this.setNoOptionState({ countValue: value, totalValue: value * apiData.price });
         }
       });
 
@@ -401,7 +401,7 @@ function ItemDetail({ $target, id, listRender }) {
           }
           this.setNoOptionState({
             countValue: e.target.value,
-            totalvalue: apiData.discountRate
+            totalValue: apiData.discountRate
               ? Math.floor(apiData?.price * ((100 - apiData?.discountRate) / 100)) * e.target.value
               : e.target.value * apiData.price,
           });
@@ -452,8 +452,8 @@ function ItemDetail({ $target, id, listRender }) {
                       ? Math.floor(apiData?.price * ((100 - apiData?.discountRate) / 100)) + additionalFee
                       : apiData.price + additionalFee,
                     countValue: 1,
-                    // TODO totalPrice price로 초기화
-                    totalPrice: apiData.discountRate
+                    // TODO optionTotalPrice price로 초기화
+                    optionTotalPrice: apiData.discountRate
                       ? Math.floor(apiData?.price * ((100 - apiData?.discountRate) / 100)) + additionalFee
                       : apiData.price + additionalFee,
                   },
@@ -477,7 +477,7 @@ function ItemDetail({ $target, id, listRender }) {
               this.optionState.optionValue.map((v) => {
                 if (v.id === +$options.dataset.optionId) {
                   v.countValue = value;
-                  v.totalPrice = v.price * v.countValue;
+                  v.optionTotalPrice = v.price * v.countValue;
                 }
                 this.OptionCount();
                 this.optionTotalCount();
@@ -494,7 +494,7 @@ function ItemDetail({ $target, id, listRender }) {
             this.optionState.optionValue.map((v) => {
               if (v.id === +$options.dataset.optionId) {
                 v.countValue = value;
-                v.totalPrice = v.price * v.countValue;
+                v.optionTotalPrice = v.price * v.countValue;
               }
               this.OptionCount();
               this.optionTotalCount();
@@ -516,10 +516,11 @@ function ItemDetail({ $target, id, listRender }) {
             if (input.value > lengths) {
               input.value = lengths;
             }
+
             this.optionState.optionValue.map((v) => {
               if (v.id === +$options.dataset.optionId) {
                 v.countValue = parseInt(input.value);
-                v.totalPrice = v.price * v.countValue;
+                v.optionTotalPrice = v.price * v.countValue;
                 // TODO : optionValue의 데이터를 변경하면 option_price 요소만 업데이트
 
                 document.querySelectorAll(".option_price").forEach((value) => {
@@ -599,11 +600,11 @@ function ItemDetail({ $target, id, listRender }) {
                        **/
                       if (savedOption) {
                         savedOption.countValue += newOption.countValue;
-                        savedOption.totalPrice += newOption.totalPrice;
+                        savedOption.optionTotalPrice += newOption.optionTotalPrice;
                         /**
                          * TODO savedOption가 있으면 savedOption은 localStorage optionValue의 객체를 참조하여
-                         * TODO savedOption는  localStorage optionValue를 참조 하여 데이터를 불러오고, 추가할 데이터의 optionValue의 countValue와 totalPrice와 더함
-                         * TODO savedOption 참조 값에 의해 localStorage optionValue의 countValue와 totalPrice가 변경 됨
+                         * TODO savedOption는 localStorage optionValue를 참조 하여 데이터를 불러오고, 추가할 데이터의 optionValue의 countValue와 optionTotalPrice와 더함
+                         * TODO savedOption 참조 값에 의해 localStorage optionValue의 countValue와 optionTotalPrice가 변경 됨
                          **/
                       } else {
                         // TODO savedOption가 없으면 해당 cartData optionValue 배열에 result optionValue항목을 push한다.
@@ -644,7 +645,7 @@ function ItemDetail({ $target, id, listRender }) {
                   let savedValue = cartData.find((option) => option.id === resultData.id);
                   if (savedValue) {
                     savedValue.countValue += resultData.countValue;
-                    savedValue.totalvalue += resultData.totalvalue;
+                    savedValue.totalValue += resultData.totalValue;
                     duplicated = true;
                   }
                 }
@@ -687,7 +688,7 @@ function ItemDetail({ $target, id, listRender }) {
                       let savedOption = item.optionValue.find((option) => option.id === newOption.id);
                       if (savedOption) {
                         savedOption.countValue += newOption.countValue;
-                        savedOption.totalPrice += newOption.totalPrice;
+                        savedOption.optionTotalPrice += newOption.optionTotalPrice;
                       } else {
                         item.optionValue.push(newOption);
                       }
@@ -713,7 +714,7 @@ function ItemDetail({ $target, id, listRender }) {
                   let savedValue = cartData.find((option) => option.id === resultData.id);
                   if (savedValue) {
                     savedValue.countValue += resultData.countValue;
-                    savedValue.totalvalue += resultData.totalvalue;
+                    savedValue.totalValue += resultData.totalValue;
                     duplicated = true;
                   }
                 }
