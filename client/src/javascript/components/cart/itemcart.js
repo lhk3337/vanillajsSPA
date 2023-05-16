@@ -3,7 +3,12 @@ import api from "../../lib/api.js";
 import { getItem, setItem } from "../../lib/storage.js";
 function ItemCart({ $main }) {
   const cartData = getItem("product_carts", []);
+  cartData?.forEach((v) => {
+    v.totalValue = v.optionValue ? v.optionValue.reduce((a, b) => a + b.optionTotalPrice, 0) : v.totalValue;
+  });
+
   this.state = { couponApi: null, apiAddr: null };
+  this.couponState = { cartData: [] };
   this.setState = (nextState) => {
     this.state = nextState;
     this.render();
@@ -13,10 +18,18 @@ function ItemCart({ $main }) {
     const couponApi = await (await api()).fetchCoupon();
     const apiAddr = (await api()).API_ADDR;
     this.setState({ ...this.state, couponApi, apiAddr, cartData });
+    this.setCouponState({ cartData });
   };
+
+  this.setCouponState = (nextState) => {
+    this.couponState = nextState;
+    this.render();
+  };
+
   this.data();
   this.render = async () => {
-    const { couponApi, apiAddr, cartData } = this.state;
+    const { couponApi, apiAddr } = this.state;
+    const { cartData } = this.couponState;
     if (!couponApi) return;
     $main.innerHTML = `
     <div class="cart_container">
@@ -130,16 +143,12 @@ function ItemCart({ $main }) {
                 </div>
                 <div class="coupon_discount">
                   <span>-</span>
-                  <span>-</span>
+                  <span>${v.discount ? `-${v.discount}원` : "-"}</span>
                 </div>
                 <div class="prices">
                   <div class="shippingFee">${v.shippingFee.toLocaleString("ko-KR")}원</div>
                   <div class="order_price">
-                    <span>${
-                      v.optionValue
-                        ? `${v.optionValue.reduce((a, b) => a + b.totalPrice, 0).toLocaleString("ko-KR")}`
-                        : v.totalvalue.toLocaleString("ko-KR")
-                    }원</span>
+                  <span>${v.totalValue}원</span>
                   </div>
                 </div>
               </div>
@@ -214,17 +223,17 @@ function ItemCart({ $main }) {
     // * 선택 삭제하기 버튼 클릭 이벤트 (체크박스의 체크하면 그 요소 삭제하기)
     const $selectDeleteBtn = document.querySelector(".sel_btn_del");
     $selectDeleteBtn.addEventListener("click", () => {
-      if (window.confirm("상품을 삭제 하시겠습니까?")) {
-        const checkedItemIds = [];
-        checkboxs.forEach((element) => {
-          if (element.checked) {
-            checkedItemIds.push(+element.dataset.itemId);
-          }
-          // TODO checkbox를 checked를 하게 되면 checkbox의 dataset을 checkedItemIds에 저장
-        });
-        // TODO checkedItemIds 배열이 있으면(checkbox checked된 것) 아래의 if문 실행
+      const checkedItemIds = [];
+      checkboxs.forEach((element) => {
+        if (element.checked) {
+          checkedItemIds.push(+element.dataset.itemId);
+        }
+        // TODO checkbox를 checked를 하게 되면 checkbox의 dataset을 checkedItemIds에 저장
+      });
+      // TODO checkedItemIds 배열이 있으면(checkbox checked된 것) 아래의 if문 실행
 
-        if (checkedItemIds.length > 0) {
+      if (checkedItemIds.length > 0) {
+        if (window.confirm("상품을 삭제 하시겠습니까?")) {
           const filteredData = cartData.filter((item) => !checkedItemIds.includes(item.id));
           /**
            * TODO cartData의 id가 checkedItemIds의 id가 포함되면 true이나 체크된 것을 삭제 해야 하므로 !를 사용 하여 false로 만듦
@@ -232,10 +241,10 @@ function ItemCart({ $main }) {
            **/
 
           setItem("product_carts", filteredData);
-          // TODO 변경된 filteredData를 localStorage product_carts에 저장하기
         }
-        routeChange("/cart");
+        // TODO 변경된 filteredData를 localStorage product_carts에 저장하기
       }
+      routeChange("/cart");
     });
 
     // AllCheckbox click event 설정하기
