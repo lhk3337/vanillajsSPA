@@ -1,6 +1,6 @@
 import { routeChange } from "../../lib/router.js";
 import api from "../../lib/api.js";
-import { getItem, setItem } from "../../lib/storage.js";
+import { getItem, removeItem, setItem } from "../../lib/storage.js";
 function ItemCart({ $main }) {
   const cartData = getItem("product_carts", []);
   cartData?.forEach((v) => {
@@ -103,9 +103,11 @@ function ItemCart({ $main }) {
         </div>
         <div class="cart_product_list"></div>
         <div class="order_amount_box"></div>
+        <div class="order_button_box"></div>
       `;
       this.RenderCartList();
       this.RenderOrderAmountBox();
+      this.RenderOrderButton();
     };
 
     this.RenderCartList = () => {
@@ -207,6 +209,11 @@ function ItemCart({ $main }) {
         <span>결제 예정 금액</span>
         <span>${(pay_amount + shippingFee).toLocaleString("ko-Kr")}원</span>
       </div>
+      `;
+    };
+    this.RenderOrderButton = () => {
+      document.querySelector(".order_button_box").innerHTML = `
+        <button class="order_product_btn">선택 상품 주문하기</button>
       `;
     };
     this.RenderCouponComponent();
@@ -319,6 +326,33 @@ function ItemCart({ $main }) {
         const AllCheckbox = [...checkboxs].every((checkbox) => checkbox.checked);
         allCheck.checked = AllCheckbox;
       });
+    });
+    const $order_product_btn = document.querySelector(".order_product_btn");
+    $order_product_btn.addEventListener("click", () => {
+      const discount = cartData.reduce((total, product) => {
+        if (product.discount) {
+          return total + product.discount;
+        } else {
+          return total;
+        }
+      }, 0);
+      const shippingFee = cartData.reduce((acc, curr) => acc + curr.shippingFee, 0);
+      const pay_amount = cartData.reduce((acc, curr) => acc + curr.totalValue, 0);
+
+      this.setCouponState({
+        ...this.couponState,
+        totalPrice: pay_amount + shippingFee,
+        totalDiscount: discount,
+        totalshippingFee: shippingFee,
+      });
+
+      if (window.confirm("상품을 구매하시겠습니까?")) {
+        removeItem("product_carts");
+        routeChange("/");
+        fetch("http://localhost:8080/mall", { method: "POST", body: { ...this.couponState } })
+          .then((response) => response.json())
+          .then((data) => console.log(data.success));
+      }
     });
   };
 }
