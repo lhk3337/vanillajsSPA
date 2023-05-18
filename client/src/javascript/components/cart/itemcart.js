@@ -7,6 +7,9 @@ function ItemCart({ $main }) {
     if (!v.totalValue) {
       v.totalValue = v.optionValue ? v.optionValue.reduce((a, b) => a + b.optionTotalPrice, 0) : v.totalValue;
     }
+    if (!v.noDiscountTotalValue) {
+      v.noDiscountTotalValue = v.optionValue ? v.optionValue.reduce((a, b) => a + b.optionTotalPrice, 0) : v.totalValue;
+    }
   });
 
   this.state = { couponApi: null, apiAddr: null };
@@ -167,30 +170,42 @@ function ItemCart({ $main }) {
       }
     };
     this.RenderOrderAmountBox = () => {
+      const { cartData } = this.couponState;
+      const noDiscountTotalValue = cartData.reduce((acc, curr) => acc + curr.noDiscountTotalValue, 0);
+      const discount = cartData.reduce((acc, curr) => {
+        if (curr.discount) {
+          return acc + curr.discount;
+        } else {
+          return acc;
+        }
+      }, 0);
+      const shippingFee = cartData.reduce((acc, curr) => acc + curr.shippingFee, 0);
+      const pay_amount = cartData.reduce((acc, curr) => acc + curr.totalValue, 0);
+
       document.querySelector(".order_amount_box").innerHTML = `
       <div class="total_order_item">
         <div class="order_item">
           <span>총 상품금액</span>
-          <span>80820원</span>
+          <span>${noDiscountTotalValue.toLocaleString("ko-Kr")}원</span>
         </div>
         <div class="order_item">
           <img src="/src/assets/minus-icon-bg-white.svg" alt="" />
         </div>
         <div class="order_item">
           <span>쿠폰 할인</span>
-          <span>4000원</span>
+          <span>${discount.toLocaleString("ko-Kr")}원</span>
         </div>
         <div class="order_item">
           <img src="/src/assets/plus-icon-bg-white.svg" alt="" />
         </div>
         <div class="order_item">
           <span>배송비</span>
-          <span>3000원</span>
+          <span>${shippingFee.toLocaleString("ko-Kr")}원</span>
         </div>
       </div>
       <div class="pay_amount">
         <span>결제 예정 금액</span>
-        <span>79820원</span>
+        <span>${(pay_amount + shippingFee).toLocaleString("ko-Kr")}원</span>
       </div>
       `;
     };

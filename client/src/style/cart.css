@@ -245,6 +245,7 @@ input[type="checkbox"]:checked + label {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  align-items: center;
 }
 .order_item span:last-child {
   font-weight: 700;
@@ -255,6 +256,7 @@ input[type="checkbox"]:checked + label {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  align-items: center;
 }
 .pay_amount span:last-child {
   font-weight: 700;
