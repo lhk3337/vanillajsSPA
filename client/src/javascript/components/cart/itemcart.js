@@ -32,6 +32,21 @@ function ItemCart({ $main }) {
   };
 
   this.data();
+  const totalData = () => {
+    const { cartData } = this.couponState;
+    const noDiscountTotalValue = cartData.reduce((acc, curr) => acc + curr.noDiscountTotalValue, 0);
+    const discount = cartData.reduce((acc, curr) => {
+      if (curr.discount) {
+        return acc + curr.discount;
+      } else {
+        return acc;
+      }
+    }, 0);
+    const shippingFee = cartData.reduce((acc, curr) => acc + curr.shippingFee, 0);
+    const pay_amount = cartData.reduce((acc, curr) => acc + curr.totalValue, 0);
+    return { noDiscountTotalValue, discount, shippingFee, pay_amount };
+  };
+
   this.render = async () => {
     const { couponApi, apiAddr } = this.state;
     const { cartData } = this.couponState;
@@ -172,17 +187,7 @@ function ItemCart({ $main }) {
       }
     };
     this.RenderOrderAmountBox = () => {
-      const { cartData } = this.couponState;
-      const noDiscountTotalValue = cartData.reduce((acc, curr) => acc + curr.noDiscountTotalValue, 0);
-      const discount = cartData.reduce((acc, curr) => {
-        if (curr.discount) {
-          return acc + curr.discount;
-        } else {
-          return acc;
-        }
-      }, 0);
-      const shippingFee = cartData.reduce((acc, curr) => acc + curr.shippingFee, 0);
-      const pay_amount = cartData.reduce((acc, curr) => acc + curr.totalValue, 0);
+      const { noDiscountTotalValue, discount, shippingFee, pay_amount } = totalData();
 
       document.querySelector(".order_amount_box").innerHTML = `
       <div class="total_order_item">
@@ -329,24 +334,15 @@ function ItemCart({ $main }) {
     });
     const $order_product_btn = document.querySelector(".order_product_btn");
     $order_product_btn.addEventListener("click", () => {
-      const discount = cartData.reduce((total, product) => {
-        if (product.discount) {
-          return total + product.discount;
-        } else {
-          return total;
-        }
-      }, 0);
-      const shippingFee = cartData.reduce((acc, curr) => acc + curr.shippingFee, 0);
-      const pay_amount = cartData.reduce((acc, curr) => acc + curr.totalValue, 0);
-
-      this.setCouponState({
-        ...this.couponState,
-        totalPrice: pay_amount + shippingFee,
-        totalDiscount: discount,
-        totalshippingFee: shippingFee,
-      });
-
       if (window.confirm("상품을 구매하시겠습니까?")) {
+        const { discount, shippingFee, pay_amount } = totalData();
+
+        this.setCouponState({
+          ...this.couponState,
+          totalPrice: pay_amount + shippingFee,
+          totalDiscount: discount,
+          totalshippingFee: shippingFee,
+        });
         removeItem("product_carts");
         routeChange("/");
         fetch("http://localhost:8080/mall", { method: "POST", body: { ...this.couponState } })
