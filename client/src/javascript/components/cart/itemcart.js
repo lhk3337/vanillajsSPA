@@ -3,6 +3,8 @@ import api from "../../lib/api.js";
 import { getItem, removeItem, setItem } from "../../lib/storage.js";
 function ItemCart({ $main }) {
   const cartData = getItem("product_carts", []);
+
+  // * 주문창에서 넘어온 해당 상품의 옵션들의 가격을 더해 v.totalValue에 저장, noDiscountTotalValue는 쿠폰 적용되지 않은 가격
   cartData?.forEach((v) => {
     if (!v.totalValue) {
       v.totalValue = v.optionValue ? v.optionValue.reduce((a, b) => a + b.optionTotalPrice, 0) : v.totalValue;
@@ -14,15 +16,11 @@ function ItemCart({ $main }) {
 
   this.state = { couponApi: null, apiAddr: null };
   this.couponState = { cartData: [] };
-  this.setState = (nextState) => {
-    this.state = nextState;
-    this.render();
-  };
 
   this.data = async () => {
     const couponApi = await (await api()).fetchCoupon();
     const apiAddr = (await api()).API_ADDR;
-    this.setState({ ...this.state, couponApi, apiAddr, cartData });
+    this.state = { couponApi, apiAddr };
     this.setCouponState({ cartData });
   };
 
@@ -32,6 +30,8 @@ function ItemCart({ $main }) {
   };
 
   this.data();
+
+  //* 계산할 제품 총 가격 정보 데이터 함수
   const totalData = () => {
     const { cartData } = this.couponState;
     const noDiscountTotalValue = cartData.reduce((acc, curr) => acc + curr.noDiscountTotalValue, 0);
@@ -80,6 +80,7 @@ function ItemCart({ $main }) {
     $counter.className = "count__number_container";
     $option__container.className = "option__container";
 
+    //* 쿠폰 select box container
     this.selectedOption = () => {
       if (document.querySelector(".option_input_container")) {
         document.querySelector(".option_input_container").appendChild($option__container);
@@ -98,7 +99,7 @@ function ItemCart({ $main }) {
       }
     };
 
-    // * add cart product list component
+    //* add cart product list component
     this.RenderOrderComponent = () => {
       document.querySelector(".order_product_container").innerHTML = `
         <div class="sub_title">
@@ -125,6 +126,7 @@ function ItemCart({ $main }) {
       this.RenderOrderButton();
     };
 
+    //* product cart list view Component
     this.RenderCartList = () => {
       if (cartData.length) {
         document.querySelector(".cart_product_list").innerHTML = `
@@ -181,11 +183,14 @@ function ItemCart({ $main }) {
         </ul>
         `;
       } else {
+        // * list에 아무 상품이 없을경우 처리하기
         document.querySelector(
           ".cart_product_list"
         ).innerHTML = `<div class="empty_cart">장바구니에 담긴 상품이 없습니다.</div>`;
       }
     };
+
+    //* 계산할 가격 정보를 보여주는 Component
     this.RenderOrderAmountBox = () => {
       const { noDiscountTotalValue, discount, shippingFee, pay_amount } = totalData();
 
@@ -216,6 +221,8 @@ function ItemCart({ $main }) {
       </div>
       `;
     };
+
+    //* 구매 버튼 Component
     this.RenderOrderButton = () => {
       document.querySelector(".order_button_box").innerHTML = `
         <button class="order_product_btn">선택 상품 주문하기</button>
@@ -224,13 +231,13 @@ function ItemCart({ $main }) {
     this.RenderCouponComponent();
     this.RenderOrderComponent();
 
-    // ! 이벤트 처리 부분
+    //! 이벤트 처리 부분
     const $home_btn = document.querySelector(".home_btn");
     $home_btn.addEventListener("click", () => {
       routeChange("/");
     });
 
-    // * 쿠폰 옵션 박스 event 설정하기
+    //* 쿠폰 옵션 박스 event 설정하기
     const $couponeOptionToggleBtn = document.querySelector(".toggle-btn");
     const $selectBoxOption = document.querySelector(".select-box-option");
     const allCheck = document.getElementById("allCheckbox");
@@ -250,45 +257,51 @@ function ItemCart({ $main }) {
     }
 
     const $optionSelectBtn = document.querySelectorAll(".option-btn");
-
+    //* 쿠폰 select 클릭 event 설정하고 값 변경시키기
     $optionSelectBtn.forEach((element) => {
       element.addEventListener("click", () => {
         const {
           dataset: { optionId },
         } = element;
         const optionClickItem = couponApi.find((v) => v.id === +optionId);
-        const couponAvailableItem = cartData.find((v) => v.id === optionClickItem.productid);
-
-        if (couponAvailableItem) {
-          const updateData = this.couponState.cartData.map((item) => {
-            if (item.id === optionClickItem.productid) {
-              return {
-                ...item,
-                discount: optionClickItem.discount === 1500 ? item.discount : optionClickItem.discount,
-                shippingFee:
-                  item.shippingFee === 0
-                    ? item.shippingFee
-                    : optionClickItem.discount === 1500
-                    ? optionClickItem.discount - item.shippingFee
-                    : item.shippingFee,
-                couponName: optionClickItem.couponName,
-                totalValue: item.discount
-                  ? item.totalValue
-                  : item.totalValue - (optionClickItem.discount === 1500 ? 0 : optionClickItem.discount),
-              };
-            }
-            return item;
-          });
-          this.setCouponState({
-            ...this.couponState,
-            cartData: updateData,
-          });
-          setItem("product_carts", updateData);
-        }
+        // TODO 해당 쿠폰 선택
+        const updateData = this.couponState.cartData.map((item) => {
+          if (item.id === optionClickItem.productid) {
+            // TODO 쿠폰 아이디와 해당 상품 아이디가 같은 상품 선택되면 if문 실행
+            return {
+              ...item,
+              discount: optionClickItem.discount === 1500 ? item.discount : optionClickItem.discount,
+              shippingFee:
+                item.shippingFee === 0
+                  ? item.shippingFee
+                  : optionClickItem.discount === 1500
+                  ? optionClickItem.discount - item.shippingFee
+                  : item.shippingFee,
+              couponName: optionClickItem.couponName,
+              totalValue: item.discount
+                ? item.totalValue
+                : item.totalValue - (optionClickItem.discount === 1500 ? 0 : optionClickItem.discount),
+            };
+            /**
+             * TODO 쿠폰 아이디와 해당 상품 아이디가 같을때 if문 실행
+             * TODO updateData에 배열 객체구조로 업데이트 시키기, discount, shippingFee, couponName, totalValue
+             * TODO discount에서 optionClickItem.discount 값이 1500(배송료)이면 item.discount에 undefined로 객체를 생성 값이
+             * TODO 2000(할인)이면 item.discount에  optionClickItem.discount인 2000을 생성
+             * TODO 처음에 item.discount가 없기 때문에 후자가 실행되어 item.totalValue에서 discount가 2000인 것을 뺀 것을 item.totalValue로 업데이트 된다.
+             * TODO item.discount가 생성되었다면 아까 item.discount 에서 2000을 뺀 item.totalValue를 불러 들임
+             **/
+          }
+          return item;
+        });
+        this.setCouponState({
+          ...this.couponState,
+          cartData: updateData,
+        });
+        setItem("product_carts", updateData);
       });
     });
 
-    // * 선택 삭제하기 버튼 클릭 이벤트 (체크박스의 체크하면 그 요소 삭제하기)
+    //* 선택 삭제하기 버튼 클릭 이벤트 (체크박스의 체크하면 그 요소 삭제하기)
     const $selectDeleteBtn = document.querySelector(".sel_btn_del");
     $selectDeleteBtn.addEventListener("click", () => {
       const checkedItemIds = [];
@@ -315,7 +328,7 @@ function ItemCart({ $main }) {
       routeChange("/cart");
     });
 
-    // AllCheckbox click event 설정하기
+    //* AllCheckbox click event 설정하기
 
     allCheck.addEventListener("change", () => {
       checkboxs.forEach((_, i) => {
@@ -325,7 +338,7 @@ function ItemCart({ $main }) {
       });
     });
 
-    // 항목의 checkbox가 모두 체크되면 AllCheckbox가 체크 됨
+    //* 항목의 checkbox가 모두 체크되면 AllCheckbox가 체크 됨
     checkboxs.forEach((checkbox) => {
       checkbox.addEventListener("change", () => {
         const AllCheckbox = [...checkboxs].every((checkbox) => checkbox.checked);
